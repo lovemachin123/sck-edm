@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fafaf6"/>
+      <stop offset="1" stop-color="#f0ebe3"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#000" stroke-width=".5" opacity=".06"/>
+    </pattern>
+    <radialGradient id="radarGrad" cx="50%" cy="50%" r="58%">
+      <stop offset="0%" stop-color="#ff2e63" stop-opacity=".42"/>
+      <stop offset="60%" stop-color="#ff2e63" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#ff2e63" stop-opacity=".06"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Brand mark + wordmark -->
+  <g transform="translate(72, 72)">
+    <rect width="56" height="56" rx="12" fill="#0a0a0a"/>
+    <path d="M14 44 L28 14 L42 44 M20 33 L36 33" stroke="#ff2e63" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+  <text x="148" y="115" font-family="Inter, 'Helvetica Neue', sans-serif" font-weight="800" font-size="22" fill="#0a0a0a" letter-spacing="-0.5">
+    CAD <tspan fill="#ff2e63">Diagnosis</tspan>
+  </text>
+
+  <!-- Headline EN -->
+  <text x="72" y="280" font-family="Inter, 'Helvetica Neue', sans-serif" font-weight="900" font-size="92" fill="#0a0a0a" letter-spacing="-3">What&#39;s your</text>
+  <text x="72" y="380" font-family="Inter, 'Helvetica Neue', sans-serif" font-weight="900" font-size="92" fill="#ff2e63" letter-spacing="-3">design type?</text>
+
+  <!-- Korean subtitle -->
+  <text x="72" y="440" font-family="Pretendard, 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif" font-weight="700" font-size="28" fill="#4d4a45" letter-spacing="-1">
+    당신의 설계 워크플로는 어떤 유형입니까?
+  </text>
+
+  <!-- Stats badges -->
+  <g transform="translate(72, 500)" font-family="Inter, 'Helvetica Neue', sans-serif" font-weight="700" font-size="15">
+    <g>
+      <rect width="170" height="52" rx="26" fill="#ffffff" stroke="#e2dfd9"/>
+      <text x="85" y="33" fill="#0a0a0a" text-anchor="middle">21 QUESTIONS</text>
+    </g>
+    <g transform="translate(184, 0)">
+      <rect width="200" height="52" rx="26" fill="#ffffff" stroke="#e2dfd9"/>
+      <text x="100" y="33" fill="#0a0a0a" text-anchor="middle">5 DIMENSIONS</text>
+    </g>
+    <g transform="translate(398, 0)">
+      <rect width="170" height="52" rx="26" fill="#0a0a0a"/>
+      <text x="85" y="33" fill="#ffffff" text-anchor="middle">10+ TYPES</text>
+    </g>
+  </g>
+
+  <!-- Decorative radar polygon (right) -->
+  <g transform="translate(940, 315)">
+    <polygon points="0,-160 152,-49 94,129 -94,129 -152,-49" fill="none" stroke="#0a0a0a" stroke-width="1.2" opacity=".25"/>
+    <polygon points="0,-128 122,-39 75,103 -75,103 -122,-39" fill="none" stroke="#0a0a0a" stroke-width=".8" opacity=".18" stroke-dasharray="3 4"/>
+    <polygon points="0,-96 91,-30 56,77 -56,77 -91,-30" fill="none" stroke="#0a0a0a" stroke-width=".8" opacity=".18" stroke-dasharray="3 4"/>
+    <polygon points="0,-64 61,-20 38,52 -38,52 -61,-20" fill="none" stroke="#0a0a0a" stroke-width=".8" opacity=".18" stroke-dasharray="3 4"/>
+    <polygon points="0,-32 30,-10 19,26 -19,26 -30,-10" fill="none" stroke="#0a0a0a" stroke-width=".8" opacity=".18" stroke-dasharray="3 4"/>
+    <g stroke="#0a0a0a" stroke-width="1" opacity=".18">
+      <line x1="0" y1="0" x2="0" y2="-160"/>
+      <line x1="0" y1="0" x2="152" y2="-49"/>
+      <line x1="0" y1="0" x2="94" y2="129"/>
+      <line x1="0" y1="0" x2="-94" y2="129"/>
+      <line x1="0" y1="0" x2="-152" y2="-49"/>
+    </g>
+    <polygon points="0,-140 130,-35 86,108 -70,90 -132,-49" fill="url(#radarGrad)" stroke="#ff2e63" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="0" cy="-140" r="7" fill="#fff" stroke="#ff2e63" stroke-width="3"/>
+    <circle cx="130" cy="-35" r="7" fill="#fff" stroke="#ff2e63" stroke-width="3"/>
+    <circle cx="86" cy="108" r="7" fill="#fff" stroke="#ff2e63" stroke-width="3"/>
+    <circle cx="-70" cy="90" r="7" fill="#fff" stroke="#ff2e63" stroke-width="3"/>
+    <circle cx="-132" cy="-49" r="7" fill="#fff" stroke="#ff2e63" stroke-width="3"/>
+  </g>
+
+  <!-- Corner brackets -->
+  <g stroke="#0a0a0a" stroke-width="1.5" fill="none" opacity=".4">
+    <path d="M40 40 L40 60 M40 40 L60 40"/>
+    <path d="M1160 40 L1160 60 M1160 40 L1140 40"/>
+    <path d="M40 590 L40 570 M40 590 L60 590"/>
+    <path d="M1160 590 L1160 570 M1160 590 L1140 590"/>
+  </g>
+
+  <!-- Bottom-right version tag -->
+  <text x="1128" y="582" font-family="'JetBrains Mono', 'SF Mono', monospace" font-size="13" fill="#75736e" text-anchor="end" letter-spacing="2">CAD-DX · v1.0</text>
+</svg>

@@ -1,0 +1,2252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0a0a0c" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f7f5f2" media="(prefers-color-scheme: light)" />
+<title>CAD 설계 자가진단 — Design Diagnosis Tool</title>
+<meta name="description" content="21개 질문으로 당신의 CAD 설계 워크플로 유형을 진단하고, 5개 영역(자동화·전문성·협업·확장성·이동성) 점수와 함께 가장 적합한 AutoCAD 솔루션을 추천받는 자가진단 웹앱." />
+<meta name="keywords" content="CAD, AutoCAD, 설계 진단, 자가진단, AutoCAD Plus, AutoCAD Web, 설계 워크플로, design diagnosis" />
+<meta name="author" content="CAD Diagnosis Tool" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://USERNAME.github.io/cad-diagnosis/" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:site_name" content="CAD Diagnosis Tool" />
+<meta property="og:title" content="CAD 설계 자가진단 — Design Diagnosis Tool" />
+<meta property="og:description" content="21개 질문으로 당신의 CAD 설계 워크플로 유형을 진단하고, 가장 적합한 AutoCAD 솔루션을 추천받는 자가진단 웹앱." />
+<meta property="og:url" content="https://USERNAME.github.io/cad-diagnosis/" />
+<meta property="og:image" content="https://USERNAME.github.io/cad-diagnosis/og-image.svg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="CAD Diagnosis Tool — 당신의 설계 워크플로는 어떤 유형입니까?" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="CAD 설계 자가진단 — Design Diagnosis Tool" />
+<meta name="twitter:description" content="21개 질문으로 당신의 CAD 설계 워크플로 유형을 진단하는 자가진단 웹앱." />
+<meta name="twitter:image" content="https://USERNAME.github.io/cad-diagnosis/og-image.svg" />
+
+<!-- Favicon (inline SVG, no external file required) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0a'/%3E%3Cpath d='M10 23 L16 9 L22 23 M12.5 18.5 H19.5' stroke='%23ff2e63' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a0a'/%3E%3Cpath d='M10 23 L16 9 L22 23 M12.5 18.5 H19.5' stroke='%23ff2e63' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E" />
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "CAD 설계 자가진단",
+  "alternateName": "Design Diagnosis Tool",
+  "description": "21개 질문으로 CAD 설계 워크플로 유형을 진단하는 자가진단 웹앱.",
+  "applicationCategory": "ProductivityApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0" },
+  "inLanguage": "ko-KR"
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+
+<style>
+/* ============================================================
+   1.  DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* — Neutrals (warm gray) ————————————————————————— */
+  --n-0:   #ffffff;
+  --n-25:  #fdfcfa;
+  --n-50:  #faf9f6;
+  --n-100: #f5f3ef;
+  --n-150: #eeece7;
+  --n-200: #e2dfd9;
+  --n-300: #cdc9c2;
+  --n-400: #9c9892;
+  --n-500: #6f6c66;
+  --n-600: #4d4a45;
+  --n-700: #2e2c29;
+  --n-800: #19181c;
+  --n-900: #0a0a09;
+
+  /* — Brand ——————————————————————————————————————— */
+  --brand:        #ff2e63;
+  --brand-soft:   #ffe8ee;
+  --brand-deep:   #c91144;
+  --brand-ink:    #4d0a1d;
+
+  /* — Surfaces ——————————————————————————————————— */
+  --bg:           #f4f1ec;
+  --bg-deco:      rgba(0,0,0,.025);
+  --surface:      #ffffff;
+  --surface-soft: #faf9f6;
+  --surface-elev: #ffffff;
+  --ink:          #0a0a0a;
+  --text:         #181816;
+  --text-mute:    #6f6c66;
+  --text-faint:   #9c9892;
+  --border:       #eeece7;
+  --border-2:     #e2dfd9;
+  --hairline:     rgba(0,0,0,.06);
+
+  /* — Category palette ——————————————————————————— */
+  --cat-info:     #57534e;
+  --cat-auto:     #2563eb;     /* 업무자동화 */
+  --cat-expert:   #7c3aed;     /* 설계전문성 */
+  --cat-collab:   #0891b2;     /* 협업 */
+  --cat-ext:      #c2410c;     /* 확장성 */
+  --cat-mob:      #059669;     /* 이동성 */
+  --cat-fb:       #db2777;     /* 사용자의견 */
+
+  /* — Spacing scale ————————————————————————————— */
+  --sp-1:  4px;  --sp-2:  8px;  --sp-3: 12px;  --sp-4: 16px;
+  --sp-5: 20px;  --sp-6: 24px;  --sp-8: 32px;  --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px; --sp-20: 80px;
+
+  /* — Radius ——————————————————————————————————— */
+  --r-1: 6px;  --r-2: 10px;  --r-3: 14px;  --r-4: 18px;  --r-5: 24px;
+  --r-pill: 999px;
+
+  /* — Shadow (layered) ————————————————————————— */
+  --sh-line:  0 0 0 1px var(--hairline);
+  --sh-sm:    0 1px 2px rgba(15,12,8,.04), 0 2px 6px rgba(15,12,8,.04), 0 0 0 1px rgba(0,0,0,.03);
+  --sh-md:    0 2px 4px rgba(15,12,8,.04), 0 12px 24px rgba(15,12,8,.06), 0 0 0 1px rgba(0,0,0,.03);
+  --sh-lg:    0 8px 20px rgba(15,12,8,.06), 0 32px 64px rgba(15,12,8,.10), 0 0 0 1px rgba(0,0,0,.04);
+  --sh-glow:  0 6px 16px rgba(255,46,99,.18), 0 12px 32px rgba(255,46,99,.18);
+
+  /* — Motion ——————————————————————————————————— */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --d-1: 150ms; --d-2: 250ms; --d-3: 400ms; --d-4: 600ms;
+
+  /* — Typography ——————————————————————————————— */
+  --f-display: "Inter", "Pretendard Variable", -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-sans:    "Pretendard Variable", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:           #0a0a0c;
+    --bg-deco:      rgba(255,255,255,.025);
+    --surface:      #131316;
+    --surface-soft: #18181b;
+    --surface-elev: #1c1c20;
+    --ink:          #f4f4f5;
+    --text:         #ededec;
+    --text-mute:    #a8a5a0;
+    --text-faint:   #6f6c66;
+    --border:       #2a2a2e;
+    --border-2:     #3a3a3f;
+    --hairline:     rgba(255,255,255,.06);
+    --brand-soft:   #2a0e18;
+    --sh-sm:    0 1px 2px rgba(0,0,0,.4), 0 2px 6px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.04);
+    --sh-md:    0 2px 4px rgba(0,0,0,.4), 0 12px 24px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.04);
+    --sh-lg:    0 8px 20px rgba(0,0,0,.5), 0 32px 64px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.05);
+  }
+}
+
+/* ============================================================
+   2.  BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; text-rendering: optimizeLegibility; }
+body {
+  font-family: var(--f-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  font-feature-settings: "cv11","ss01","ss03","ss05";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* — Ambient background pattern (desktop) ——————————— */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--bg-deco) 1px, transparent 0);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 30%, #000 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 30%, #000 0%, transparent 80%);
+}
+
+button, input, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+button { cursor: pointer; border: none; background: none; }
+em { font-style: normal; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   3.  APP LAYOUT
+   ============================================================ */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--surface);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 768px) {
+  body { padding: 32px 0; }
+  .app {
+    border-radius: var(--r-5);
+    min-height: calc(100vh - 64px);
+    box-shadow: var(--sh-lg);
+    overflow: hidden;
+  }
+}
+
+/* ============================================================
+   4.  TOP BAR
+   ============================================================ */
+.top {
+  padding: var(--sp-5) var(--sp-6) var(--sp-3);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: saturate(180%) blur(8px);
+  -webkit-backdrop-filter: saturate(180%) blur(8px);
+}
+.top-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--sp-3);
+}
+.brand {
+  display: flex; align-items: center; gap: var(--sp-2);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.brand-mark {
+  width: 22px; height: 22px;
+  background: var(--ink);
+  color: var(--surface);
+  border-radius: var(--r-1);
+  display: grid; place-items: center;
+  font-weight: 800;
+  font-size: 11px;
+}
+.brand-mark.brand-mark-accent { background: var(--brand); color: #fff; }
+.brand-text { letter-spacing: -.01em; }
+.brand-text em { color: var(--brand); font-style: normal; font-weight: 800; }
+
+.step-counter {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-mute);
+  letter-spacing: 0;
+}
+.step-counter b { color: var(--text); font-weight: 700; }
+
+/* progress with milestones */
+.progress {
+  position: relative;
+  height: 5px;
+  background: var(--n-150);
+  border-radius: var(--r-pill);
+  overflow: visible;
+}
+@media (prefers-color-scheme: dark) { .progress { background: var(--border); } }
+.progress-fill {
+  position: absolute; inset: 0 auto 0 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--brand) 0%, #ff5e8a 100%);
+  border-radius: var(--r-pill);
+  transition: width var(--d-3) var(--ease-expo);
+  box-shadow: 0 0 12px rgba(255,46,99,.4);
+}
+.progress-milestones {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1px;
+  pointer-events: none;
+}
+.progress-milestones span {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.7);
+  opacity: 0;
+  transition: opacity var(--d-2);
+}
+.progress-milestones span.passed { opacity: 1; }
+
+/* ============================================================
+   5.  BODY (main scroll area)
+   ============================================================ */
+main.body {
+  flex: 1;
+  padding: var(--sp-8) var(--sp-6) var(--sp-20);
+  overflow-y: auto;
+}
+.slide { animation: fade-up var(--d-3) var(--ease-expo); }
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   6.  INTRO
+   ============================================================ */
+.intro { padding: var(--sp-3) 0 var(--sp-4); }
+
+.intro-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 6px 14px 6px 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-mute);
+  letter-spacing: 0;
+}
+.intro-tag .tag-dot {
+  width: 6px; height: 6px;
+  background: var(--brand);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255,46,99,.18);
+  animation: pulse 2s var(--ease-expo) infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(255,46,99,.18); }
+  50%      { box-shadow: 0 0 0 6px rgba(255,46,99,0); }
+}
+
+.intro-headline {
+  margin-top: var(--sp-5);
+  font-family: var(--f-display);
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+.intro-headline em {
+  background: linear-gradient(90deg, var(--brand) 0%, #ff7aa3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-style: normal;
+}
+.intro-sub {
+  margin-top: var(--sp-4);
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--text-mute);
+  letter-spacing: -.005em;
+}
+
+.intro-illu {
+  margin: var(--sp-8) calc(var(--sp-6) * -1) var(--sp-8);
+  padding: var(--sp-6) var(--sp-6) var(--sp-4);
+  position: relative;
+  background:
+    linear-gradient(180deg, var(--surface-soft) 0%, var(--surface) 100%);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.intro-illu svg { width: 100%; height: auto; display: block; }
+
+.trust-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+  margin: var(--sp-6) 0;
+}
+.trust-card {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-3);
+  padding: var(--sp-4) var(--sp-3);
+  text-align: center;
+  transition: all var(--d-2) var(--ease-expo);
+}
+.trust-card:hover {
+  border-color: var(--border-2);
+  transform: translateY(-2px);
+  box-shadow: var(--sh-sm);
+}
+.trust-num {
+  font-family: var(--f-display);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.trust-num span {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-faint);
+  margin-left: 2px;
+}
+.trust-lbl {
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-mute);
+  letter-spacing: -.005em;
+}
+
+.name-input-wrap { position: relative; margin-top: var(--sp-4); }
+.name-input {
+  width: 100%;
+  padding: 16px 18px;
+  background: var(--surface-soft);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-3);
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text);
+  transition: all var(--d-2) var(--ease-expo);
+  text-align: left;
+}
+.name-input::placeholder { color: var(--text-faint); }
+.name-input:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--surface);
+  box-shadow: 0 0 0 4px rgba(0,0,0,.04);
+}
+
+.btn-cta {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--sp-2);
+  width: 100%;
+  margin-top: var(--sp-3);
+  padding: 18px 24px;
+  background: var(--ink);
+  color: var(--n-0);
+  border-radius: var(--r-3);
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--d-2) var(--ease-expo);
+}
+.btn-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform var(--d-4) var(--ease-expo);
+}
+.btn-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+.btn-cta:hover::before { transform: translateX(100%); }
+.btn-cta svg { transition: transform var(--d-2) var(--ease-expo); }
+.btn-cta:hover svg { transform: translateX(3px); }
+
+.intro-foot {
+  margin-top: var(--sp-5);
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: -.005em;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   7.  QUESTION
+   ============================================================ */
+.q-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-faint);
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.q-meta .num { color: var(--text); font-weight: 600; }
+.q-meta .sep { opacity: .4; }
+.q-meta .cat { color: var(--cat-color, var(--text-mute)); font-weight: 600; }
+
+.q-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+  padding: 7px 14px 7px 10px;
+  background: var(--cat-bg, var(--surface-soft));
+  border: 1px solid var(--cat-border, var(--border));
+  border-radius: var(--r-pill);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--cat-color, var(--text));
+  letter-spacing: -.01em;
+}
+.q-badge svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+.q-title {
+  margin-top: var(--sp-5);
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.35;
+  letter-spacing: -.032em;
+  color: var(--ink);
+}
+.q-title em { color: var(--brand); font-style: normal; }
+.q-sub {
+  margin-top: var(--sp-2);
+  font-size: 13px;
+  color: var(--text-mute);
+  letter-spacing: -.005em;
+}
+
+.q-image {
+  margin: var(--sp-5) 0;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-3);
+  background:
+    repeating-linear-gradient(45deg, #1a1d24 0px, #1a1d24 12px, #1f2229 12px, #1f2229 24px);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+  display: grid; place-items: center;
+}
+.q-image::after {
+  content: '예시 도면';
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: rgba(255,255,255,.4);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+/* — Options ————————————————————————————————————— */
+.options { margin-top: var(--sp-6); display: flex; flex-direction: column; gap: var(--sp-2); }
+.options.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-2); }
+
+.opt {
+  position: relative;
+  width: 100%;
+  padding: 17px 18px 17px 22px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-3);
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -.01em;
+  line-height: 1.45;
+  transition: all var(--d-2) var(--ease-expo);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  overflow: hidden;
+}
+.opt::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--brand);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform var(--d-2) var(--ease-expo);
+}
+.opt-check {
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--border-2);
+  border-radius: 6px;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  transition: all var(--d-2) var(--ease-expo);
+  background: var(--surface);
+}
+.opt-check svg {
+  width: 12px; height: 12px;
+  stroke-dasharray: 16;
+  stroke-dashoffset: 16;
+  transition: stroke-dashoffset var(--d-3) var(--ease-expo) .05s;
+}
+.opt-body { flex: 1; min-width: 0; }
+.opt-label { font-weight: 500; }
+.opt-desc {
+  display: block;
+  margin-top: 4px;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--text-mute);
+  line-height: 1.55;
+}
+.opt:hover {
+  border-color: var(--border-2);
+  transform: translateY(-1px);
+  box-shadow: var(--sh-sm);
+}
+.opt.selected {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand-deep);
+}
+.opt.selected::before { transform: scaleY(1); }
+.opt.selected .opt-label { font-weight: 700; }
+.opt.selected .opt-check {
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.opt.selected .opt-check svg { stroke-dashoffset: 0; }
+.opt.selected .opt-desc { color: var(--brand-deep); opacity: .8; }
+@media (prefers-color-scheme: dark) {
+  .opt.selected { background: rgba(255,46,99,.12); color: #ffaec1; }
+  .opt.selected .opt-desc { color: #ff8aa8; }
+}
+
+textarea.opt-text {
+  margin-top: var(--sp-6);
+  width: 100%;
+  min-height: 140px;
+  padding: 18px;
+  background: var(--surface-soft);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-3);
+  resize: vertical;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  transition: all var(--d-2) var(--ease-expo);
+}
+textarea.opt-text::placeholder { color: var(--text-faint); }
+textarea.opt-text:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--surface);
+  box-shadow: 0 0 0 4px rgba(0,0,0,.04);
+}
+
+/* ============================================================
+   8.  NAV BAR (footer)
+   ============================================================ */
+.nav-bar {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(to top, var(--surface) 75%, rgba(0,0,0,0));
+  padding: var(--sp-4) var(--sp-6) var(--sp-6);
+  display: flex;
+  gap: var(--sp-2);
+  z-index: 20;
+}
+.btn {
+  flex: 1;
+  padding: 16px 20px;
+  border-radius: var(--r-3);
+  font-family: var(--f-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  transition: all var(--d-2) var(--ease-expo);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+.btn svg { width: 14px; height: 14px; }
+.btn-prev {
+  background: var(--surface);
+  color: var(--text-mute);
+  border: 1.5px solid var(--border);
+  flex: 0 0 38%;
+}
+.btn-prev:hover:not(:disabled) {
+  color: var(--text);
+  border-color: var(--border-2);
+}
+.btn-prev:disabled { opacity: .35; cursor: not-allowed; }
+
+.btn-next {
+  background: var(--ink);
+  color: var(--n-0);
+  position: relative;
+  overflow: hidden;
+}
+.btn-next::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform var(--d-4) var(--ease-expo);
+}
+.btn-next:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,.18); }
+.btn-next:hover:not(:disabled)::before { transform: translateX(100%); }
+.btn-next:hover:not(:disabled) svg { transform: translateX(3px); }
+.btn-next:disabled { background: var(--n-300); color: var(--text-faint); cursor: not-allowed; }
+.btn-next svg { transition: transform var(--d-2) var(--ease-expo); }
+@media (prefers-color-scheme: dark) {
+  .btn-next:disabled { background: var(--border-2); color: var(--text-faint); }
+}
+
+/* ============================================================
+   9.  RESULT - HERO
+   ============================================================ */
+.result { padding-bottom: var(--sp-8); }
+
+.r-hero {
+  position: relative;
+  text-align: center;
+  padding: var(--sp-6) 0 var(--sp-8);
+  margin-bottom: var(--sp-8);
+  border-bottom: 1px solid var(--border);
+}
+.r-hero-eyebrow {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.r-hero-eyebrow b { color: var(--text); font-weight: 600; }
+.r-hero-name {
+  margin-top: var(--sp-2);
+  font-size: 14px;
+  color: var(--text-mute);
+  font-weight: 500;
+}
+.r-hero-name b { color: var(--ink); font-weight: 700; }
+
+.r-hero-type {
+  margin-top: var(--sp-5);
+  font-family: var(--f-display);
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -.045em;
+  color: var(--ink);
+}
+.r-hero-type em {
+  background: linear-gradient(90deg, var(--brand) 0%, #ff7aa3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-style: normal;
+}
+.r-hero-eng {
+  margin-top: var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  font-family: var(--f-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-mute);
+  letter-spacing: 0;
+}
+.r-hero-eng::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: var(--brand);
+  border-radius: 50%;
+}
+
+/* ============================================================
+   10.  RESULT - SECTIONS
+   ============================================================ */
+.r-section { margin-bottom: var(--sp-8); }
+.r-section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--sp-4);
+}
+.r-section-title {
+  font-family: var(--f-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  display: flex; align-items: center; gap: var(--sp-2);
+}
+.r-section-title::before {
+  content: '';
+  width: 16px; height: 1px;
+  background: var(--brand);
+}
+.r-section-num {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  font-weight: 500;
+}
+
+/* ============================================================
+   11.  RADAR CHART
+   ============================================================ */
+.r-card {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-4);
+  overflow: hidden;
+  position: relative;
+}
+.r-card-pad { padding: var(--sp-6); }
+.r-card-pad-lg { padding: var(--sp-8) var(--sp-6); }
+
+.radar-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--sp-5);
+}
+.radar-head-title {
+  font-family: var(--f-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.01em;
+}
+.radar-head-tag {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.radar-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 0.95;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.radar-wrap svg { width: 100%; height: auto; display: block; overflow: visible; }
+.radar-axis-line { stroke: var(--border-2); stroke-width: 1; }
+.radar-grid-solid { fill: none; stroke: var(--border-2); stroke-width: 1; }
+.radar-grid-dot   { fill: none; stroke: var(--border-2); stroke-width: .8; stroke-dasharray: 2 4; opacity: .8; }
+.radar-data {
+  fill: url(#radarGrad);
+  stroke: var(--brand);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 4px 12px rgba(255,46,99,.25));
+  animation: radar-in 800ms var(--ease-expo) both;
+}
+@keyframes radar-in {
+  from { transform: scale(.6); transform-origin: center; opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.radar-vertex {
+  fill: var(--surface);
+  stroke: var(--brand);
+  stroke-width: 2.5;
+  transition: r var(--d-2) var(--ease-expo);
+}
+.radar-vertex:hover { r: 6; }
+.radar-pill-bg {
+  fill: var(--ink);
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.15));
+}
+.radar-pill-text {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  fill: var(--n-0);
+}
+.radar-axis-label {
+  font-family: var(--f-display);
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: var(--text);
+  letter-spacing: -.01em;
+}
+.radar-axis-label-en {
+  font-family: var(--f-mono);
+  font-size: 8.5px;
+  font-weight: 500;
+  fill: var(--text-faint);
+  letter-spacing: .04em;
+}
+.radar-guide {
+  font-family: var(--f-mono);
+  font-size: 8.5px;
+  fill: var(--text-faint);
+  letter-spacing: .04em;
+}
+
+/* — radar legend ————————————————————————————— */
+.radar-legend {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--sp-4);
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-3);
+  border-top: 1px dashed var(--border);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.radar-legend-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  background: var(--brand);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ============================================================
+   12.  SCORE BARS
+   ============================================================ */
+.scores { display: flex; flex-direction: column; gap: var(--sp-4); }
+.score-row {
+  display: grid;
+  grid-template-columns: 76px 1fr 38px;
+  gap: var(--sp-3);
+  align-items: center;
+}
+.score-label-wrap {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.score-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -.01em;
+}
+.score-label-en {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  color: var(--text-faint);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.score-bar {
+  position: relative;
+  height: 28px;
+  display: flex; align-items: center;
+}
+.score-bar-track {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  background: var(--n-150);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+@media (prefers-color-scheme: dark) { .score-bar-track { background: var(--border); } }
+.score-bar-fill {
+  position: absolute; inset: 0 auto 0 0;
+  height: 100%;
+  width: 0%;
+  border-radius: var(--r-pill);
+  background: linear-gradient(90deg, var(--brand) 0%, #ff7aa3 100%);
+  transition: width 1200ms var(--ease-expo);
+}
+.score-bar-milestones {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 0;
+  pointer-events: none;
+}
+.score-bar-milestones span {
+  width: 1px; height: 8px;
+  background: rgba(255,255,255,.4);
+}
+.score-num {
+  font-family: var(--f-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.02em;
+}
+
+.score-eval {
+  margin-top: var(--sp-1);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-mute);
+  letter-spacing: -.005em;
+  display: flex; align-items: center; gap: 4px;
+}
+.score-eval::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .6;
+}
+.eval-strategic { color: var(--brand); }
+.eval-improve   { color: #d97706; }
+.eval-strong    { color: #059669; }
+
+/* ============================================================
+   13.  SUMMARY (Diagnosis text)
+   ============================================================ */
+.summary {
+  position: relative;
+  padding: var(--sp-8) var(--sp-6);
+}
+.summary-quote-mark {
+  position: absolute;
+  top: 16px; left: 18px;
+  font-family: var(--f-display);
+  font-size: 80px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--brand);
+  opacity: .12;
+  pointer-events: none;
+}
+.summary-emoji {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: var(--sp-4);
+}
+.summary-eng {
+  text-align: center;
+  font-family: var(--f-display);
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -.035em;
+  color: var(--ink);
+  line-height: 1.15;
+}
+.summary-eng em {
+  background: linear-gradient(90deg, var(--brand) 0%, #ff7aa3 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  font-style: normal;
+}
+.summary-kor {
+  text-align: center;
+  margin-top: var(--sp-2);
+  font-size: 13px;
+  color: var(--text-mute);
+  letter-spacing: -.005em;
+}
+.summary-quote {
+  margin: var(--sp-6) 0;
+  padding: var(--sp-5) var(--sp-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--brand);
+  border-radius: var(--r-2);
+  font-family: var(--f-display);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: -.02em;
+  color: var(--text);
+}
+.summary-body {
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--text);
+  letter-spacing: -.005em;
+}
+.summary-body p + p { margin-top: var(--sp-3); }
+.summary-body strong {
+  color: var(--brand);
+  font-weight: 700;
+  background: linear-gradient(180deg, transparent 60%, rgba(255,46,99,.15) 60%);
+  padding: 0 2px;
+}
+/* drop cap */
+.summary-body .dropcap {
+  float: left;
+  font-family: var(--f-display);
+  font-size: 44px;
+  font-weight: 900;
+  line-height: .9;
+  color: var(--brand);
+  margin: 4px 8px -2px 0;
+  letter-spacing: -.04em;
+}
+
+/* ============================================================
+   14.  RECOMMENDATIONS
+   ============================================================ */
+.reco-grid { display: flex; flex-direction: column; gap: var(--sp-4); }
+.reco-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-4);
+  overflow: hidden;
+  position: relative;
+  transition: all var(--d-3) var(--ease-expo);
+}
+.reco-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-md);
+  border-color: var(--border-2);
+}
+.reco-header {
+  padding: var(--sp-5);
+  background: linear-gradient(135deg, var(--ink) 0%, #2a2a2e 100%);
+  color: var(--n-0);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  position: relative;
+  overflow: hidden;
+}
+.reco-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(255,46,99,.3) 0%, transparent 40%);
+  pointer-events: none;
+}
+.reco-logo {
+  width: 48px; height: 48px;
+  background: var(--brand);
+  border-radius: var(--r-2);
+  display: grid; place-items: center;
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: 22px;
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(255,46,99,.4);
+}
+.reco-title { position: relative; z-index: 1; }
+.reco-name {
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+}
+.reco-tagline {
+  margin-top: 4px;
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: rgba(255,255,255,.6);
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.reco-body { padding: var(--sp-5); }
+.reco-desc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-mute);
+  letter-spacing: -.005em;
+  margin-bottom: var(--sp-4);
+}
+.reco-chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: var(--sp-4);
+}
+.chip {
+  display: inline-flex; align-items: center;
+  padding: 5px 11px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-mute);
+  letter-spacing: -.005em;
+}
+.chip.chip-accent { background: var(--brand-soft); border-color: rgba(255,46,99,.25); color: var(--brand); }
+.reco-cta {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  padding: 10px 16px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-2);
+  font-family: var(--f-display);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.01em;
+  transition: all var(--d-2) var(--ease-expo);
+}
+.reco-cta:hover {
+  background: var(--ink);
+  color: var(--n-0);
+  border-color: var(--ink);
+}
+.reco-cta:hover svg { transform: translateX(2px); }
+.reco-cta svg { width: 12px; height: 12px; transition: transform var(--d-2) var(--ease-expo); }
+
+/* ============================================================
+   15.  ACTIONS (final buttons)
+   ============================================================ */
+.actions {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: var(--sp-8);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--border);
+}
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover {
+  background: var(--surface-soft);
+  border-color: var(--border-2);
+}
+
+/* ============================================================
+   16.  TOAST
+   ============================================================ */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 110px;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: var(--n-0);
+  padding: 12px 20px;
+  border-radius: var(--r-pill);
+  font-family: var(--f-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--d-3) var(--ease-back);
+  z-index: 100;
+  box-shadow: 0 12px 32px rgba(0,0,0,.2);
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   17.  REVEAL ANIMATION
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--d-3) var(--ease-expo), transform var(--d-3) var(--ease-expo);
+}
+.reveal.in { opacity: 1; transform: none; }
+.reveal[data-d="1"] { transition-delay: 80ms; }
+.reveal[data-d="2"] { transition-delay: 160ms; }
+.reveal[data-d="3"] { transition-delay: 240ms; }
+.reveal[data-d="4"] { transition-delay: 320ms; }
+.reveal[data-d="5"] { transition-delay: 400ms; }
+
+/* ============================================================
+   18.  PRINT
+   ============================================================ */
+@media print {
+  body { background: #fff; padding: 0; }
+  body::before { display: none; }
+  .app { box-shadow: none; max-width: 100%; border-radius: 0; }
+  .nav-bar, .actions, .toast { display: none !important; }
+  .reco-card:hover { transform: none; box-shadow: none; }
+  main.body { padding-bottom: var(--sp-6); }
+}
+
+/* ============================================================
+   19.  RESPONSIVE
+   ============================================================ */
+@media (max-width: 380px) {
+  .intro-headline { font-size: 32px; }
+  .r-hero-type { font-size: 36px; }
+  .summary-eng { font-size: 22px; }
+  .q-title { font-size: 19px; }
+  main.body { padding: var(--sp-6) var(--sp-5) var(--sp-20); }
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ====== TOP ====== -->
+  <header class="top" id="topBar" hidden>
+    <div class="top-row">
+      <div class="brand">
+        <div class="brand-mark brand-mark-accent">A</div>
+        <span class="brand-text">CAD <em>Diagnosis</em></span>
+      </div>
+      <div class="step-counter"><b id="stepCur">01</b> <span style="opacity:.4">/</span> <span id="stepTotal">21</span></div>
+    </div>
+    <div class="progress">
+      <div class="progress-fill" id="progress"></div>
+      <div class="progress-milestones" id="progressMilestones"></div>
+    </div>
+  </header>
+
+  <!-- ====== BODY ====== -->
+  <main class="body" id="content"></main>
+
+  <!-- ====== NAV ====== -->
+  <nav class="nav-bar" id="navBar" hidden>
+    <button class="btn btn-prev" id="btnPrev" aria-label="이전">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4 L6 8 L10 12"/></svg>
+      이전
+    </button>
+    <button class="btn btn-next" id="btnNext" aria-label="다음">
+      다음
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4 L10 8 L6 12"/></svg>
+    </button>
+  </nav>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ====================== ICONS (sprite) ====================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-info" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="8" cy="8" r="6.5"/>
+      <line x1="8" y1="7" x2="8" y2="11"/>
+      <circle cx="8" cy="5" r=".5" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-auto" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 1.5 L9.2 5 L13 5 L10 7.3 L11.2 11 L8 8.8 L4.8 11 L6 7.3 L3 5 L6.8 5 Z" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-expert" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 1.5 L8 14.5"/>
+      <path d="M3 6 L13 6"/>
+      <path d="M5 14 L8 1.5 L11 14"/>
+      <circle cx="8" cy="9" r="1.5"/>
+    </symbol>
+    <symbol id="i-collab" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="5" cy="6" r="2.2"/>
+      <circle cx="11" cy="6" r="2.2"/>
+      <path d="M1.5 13.5 c0-2.5 1.6-4 3.5-4 s3.5 1.5 3.5 4"/>
+      <path d="M7.5 13.5 c0-2.5 1.6-4 3.5-4 s3.5 1.5 3.5 4"/>
+    </symbol>
+    <symbol id="i-ext" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1.5" y="1.5" width="5" height="5" rx="1"/>
+      <rect x="9.5" y="1.5" width="5" height="5" rx="1"/>
+      <rect x="1.5" y="9.5" width="5" height="5" rx="1"/>
+      <rect x="9.5" y="9.5" width="5" height="5" rx="1" stroke-dasharray="1.5 1.5"/>
+    </symbol>
+    <symbol id="i-mob" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="1.5" width="8" height="13" rx="1.5"/>
+      <line x1="7" y1="12" x2="9" y2="12"/>
+    </symbol>
+    <symbol id="i-fb" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 4.5 c0-1 0.7-1.5 1.5-1.5 h9 c0.8 0 1.5 0.5 1.5 1.5 v6 c0 1-0.7 1.5-1.5 1.5 h-7 L3 14.5 V4.5z"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 8 L7 12 L13 4"/>
+    </symbol>
+  </defs>
+</svg>
+
+<script>
+/* =========================================================
+   1.  설문 데이터 (PDF 원문 기반)
+   ========================================================= */
+const QUESTIONS = [
+  // ---------- 기본정보 ----------
+  { id:'industry',  cat:'기본정보',           catKey:'info', type:'single',
+    q:'현재 종사하고 계신 업종(산업 분야)은 무엇인가요?',
+    options:['기계','건축','건축 설비(전기, 공조, 배관, 소방)','토목','플랜트','전장'] },
+  { id:'role',      cat:'기본정보',           catKey:'info', type:'single',
+    q:'현재 담당하고 있는 주요 직무(업무 영역)는 무엇입니까?',
+    options:['설계','구매','제조','관리','발주처','시공'] },
+  { id:'teamSize',  cat:'기본정보',           catKey:'info', type:'single',
+    q:'설계 인원은 몇 명인가요?',
+    options:['5명 미만','6~10명','10~20명','20명 이상'] },
+  { id:'cadType',   cat:'기본정보',           catKey:'info', type:'multi',  layout:'grid-2',
+    q:'현재 주로 사용 중인 CAD 종류는 무엇인가요?',
+    sub:'중복 선택 가능',
+    options:['AutoCAD','AutoCAD LT','AutoCAD Web','AutoCAD Plus','ZWCAD','GstarCAD','CADian','기타CAD(직접입력)'] },
+
+  // ---------- 사용시간 ----------
+  { id:'usageHour', cat:'업무 자동화 & 설계 전문성', catKey:'auto', type:'single', dim:'auto',
+    q:'1일 사용 시간은 몇 시간인가요?',
+    options:['5시간 이상','5시간 미만','3시간 미만','1시간 미만'],
+    weight:[100, 75, 50, 25] },
+
+  // ---------- 업무 자동화 ----------
+  { id:'smartBlock', cat:'업무 자동화', catKey:'auto', type:'single', dim:'auto',
+    q:'도면 내에 흩어진 블록들을 교체할 때, AI가 비슷한 모양을 인식해서 한 번에 바꿔주는 기능(Smart Blocks)이 있다면 업무에 필요하신가요?',
+    options:['매우 필요함','필요함','보통','필요 없음'],
+    weight:[100, 75, 50, 0] },
+  { id:'aiTarget',  cat:'업무 자동화', catKey:'auto', type:'text', dim:'auto',
+    q:'CAD와 AI를 함께 하여 자동화 한다면 어떤 부분에 적용하고 싶으신가요?',
+    placeholder:'예: 반복되는 도면 정정, BOM 자동 생성, 도면 검수 등' },
+  { id:'lispUse',   cat:'업무 자동화', catKey:'auto', type:'single', dim:'ext',
+    q:'업무 효율을 위해 사내 전용 리습(LISP)이나 매크로 기능을 필수적으로 사용하고 계십니까?',
+    options:['없으면 업무 불가능','없으면 다소 불편함','있으면 편함','전혀 필요 없음'],
+    weight:[100, 75, 50, 0] },
+  { id:'thirdParty',cat:'업무 자동화', catKey:'auto', type:'single', dim:'ext',
+    q:'드림(Dream), 캐드마스, 맥클릭 같은 별도의 3rd Party (서드파티) 프로그램 없이는 업무 진행이 어렵습니까?',
+    options:['없으면 업무 불가능','없으면 다소 불편함','있으면 편함','전혀 필요 없음'],
+    weight:[100, 75, 50, 0] },
+
+  // ---------- 확장성 ----------
+  { id:'erpLink',   cat:'확장성', catKey:'ext', type:'single', dim:'ext',
+    q:'ERP나 엑셀 등 타 프로그램과 연동되는 자동화 스크립트를 사용하거나 개발할 계획이 있으신가요?',
+    options:['시스템 연동 필수 (ERP/PLM)','단순 연동 (Excel)','계획 없음'],
+    weight:[100, 60, 0] },
+
+  // ---------- 이동성 ----------
+  { id:'fieldNeed', cat:'이동성', catKey:'mob', type:'single', dim:'mob',
+    q:'작업 중 최신 도면을 사무실 외부(회의실·외근 등)에서 확인해야 하는 경우가 있나요?',
+    options:['항상 그렇다','자주 있다','종종 있다','드물게 있다','거의 없다'],
+    weight:[100, 80, 60, 30, 0] },
+  { id:'digitalPref',cat:'이동성', catKey:'mob', type:'single', dim:'mob',
+    q:'현장에서 도면을 열람할 때, 종이보다 디지털(모바일기기/노트북) 사용이 편하다고 느끼시나요?',
+    options:['항상 그렇다','자주 있다','종종 있다','드물게 있다','거의 없다'],
+    weight:[100, 80, 60, 30, 0] },
+
+  // ---------- 협업 ----------
+  { id:'cloudShare',cat:'협업', catKey:'collab', type:'single', dim:'col',
+    q:'이메일 용량 제한이나 보안 문제로 도면 파일 공유에 불편함을 느끼며, 클라우드(링크 공유) 방식이 필요하신가요?',
+    options:['항상 그렇다','자주 있다','종종 있다','드물게 있다','거의 없다'],
+    weight:[100, 80, 60, 30, 0] },
+  { id:'markup',    cat:'협업', catKey:'collab', type:'single', dim:'col',
+    q:'도면에 대한 피드백(수정 지시)을 종이나 PDF가 아닌 CAD 도면 위에 바로 마크업하여 공유하고 싶으신가요?',
+    options:['항상 그렇다','자주 있다','종종 있다','드물게 있다','거의 없다'],
+    weight:[100, 80, 60, 30, 0] },
+  { id:'version',   cat:'협업', catKey:'collab', type:'single', dim:'col',
+    q:'팀원이나 협력사와 도면을 주고받을 때, 버전 관리(최종_v1, 진짜최종_v2)가 꼬여서 곤란한 적이 있나요?',
+    options:['항상 그렇다','자주 있다','종종 있다','드물게 있다','거의 없다'],
+    weight:[100, 80, 60, 30, 0] },
+
+  // ---------- 설계 전문성 ----------
+  { id:'stdParts',  cat:'설계 전문성', catKey:'expert', type:'single', dim:'exp', img:true,
+    q:'볼트, 너트, 형강 등 70만 개 이상의 표준 부품을 일일이 그리지 않고, 규격(ISO/KS 등)에 맞춰 자동으로 생성 및 배치하는 기능이 필요하신가요?',
+    options:['매우 필요하다','필요하다','보통 수준이다','필요하긴 하나 영향은 거의 없다','전혀 필요하지 않다'],
+    weight:[100, 80, 60, 30, 0] },
+  { id:'hiddenLine',cat:'설계 전문성', catKey:'expert', type:'single', dim:'exp', img:true,
+    q:'부품이 서로 겹칠 때, 앞뒤 관계를 인식하여 가려진 선을 자동으로 점선(은선) 처리해주고, 이동 시에도 자동 업데이트되는 기능이 필요하신가요?',
+    options:['매우 필요하다','필요하다','보통 수준이다','필요하긴 하나 영향은 거의 없다','전혀 필요하지 않다'],
+    weight:[100, 80, 60, 30, 0] },
+  { id:'tolerance', cat:'설계 전문성', catKey:'expert', type:'single', dim:'exp', img:true,
+    q:'치수 기입 시 공차 표현을 위한 별도 작업이 필요하신가요?',
+    options:['매우 필요하다','필요하다','보통 수준이다','필요하긴 하나 영향은 거의 없다','전혀 필요하지 않다'],
+    weight:[100, 80, 60, 30, 0] },
+  { id:'holeTable', cat:'설계 전문성', catKey:'expert', type:'single', dim:'exp', img:true,
+    q:'도면 내의 수많은 구멍(Hole) 정보를 프로그램이 자동 인식하여, 가공에 필요한 X,Y 좌표와 직경 테이블을 클릭 한 번으로 생성하는 기능이 필요하신가요?',
+    options:['매우 필요하다','필요하다','보통 수준이다','필요하긴 하나 영향은 거의 없다','전혀 필요하지 않다'],
+    weight:[100, 80, 60, 30, 0] },
+  { id:'detailView',cat:'설계 전문성', catKey:'expert', type:'single', dim:'exp', img:true,
+    q:'원본 형상이 수정되면 확대도(Detail View)까지 자동 반영되어, 별도의 수정이나 축척 계산이 필요 없는 기능이 업무에 도움이 될까요?',
+    options:['매우 필요하다','필요하다','보통 수준이다','필요하긴 하나 영향은 거의 없다','전혀 필요하지 않다'],
+    weight:[100, 80, 60, 30, 0] },
+
+  // ---------- 사용자 의견 ----------
+  { id:'extraSvc',  cat:'사용자 의견', catKey:'fb', type:'multi',
+    q:'추가적으로 제공 받고 싶은 서비스를 선택해주세요.',
+    sub:'중복 선택 가능',
+    options:[
+      {label:'유형기반 워크플로우 컨설팅', desc:'고객이 진단받은 유형에 따라 실무 개선점 코칭 및 컨설팅'},
+      {label:'DWG 리드로잉 클리닉',     desc:'기존 도면 작업 방식을 분석하고 Toolset을 활용한 Live Demo 및 고객 도면 기반 Hands-on 세션으로 Before-After 변화를 경험'},
+      {label:'AutoCAD Refresh Day 워크샵', desc:'설계 점검 후, 현재 사용하는 DWG 도면을 기반으로 반복요소·자동화·속성 및 출력 품질 분석 등 진단 항목에 대한 리포트'},
+      {label:'업종별 업무 레시피 카드 제공', desc:'2주 단위로 업종에 맞는 작업 레시피를 전달하여, 진단받은 유형에 따라 실무 개선점 코칭 및 컨설팅'}
+    ] }
+];
+
+/* =========================================================
+   2.  카테고리 메타 (색상 토큰 + 아이콘)
+   ========================================================= */
+const CAT_META = {
+  info:   { color:'var(--cat-info)',   bg:'var(--surface-soft)', border:'var(--border)',          icon:'i-info',   label:'기본정보',     en:'BASIC INFO' },
+  auto:   { color:'var(--cat-auto)',   bg:'#eff6ff',            border:'#dbeafe',                icon:'i-auto',   label:'업무 자동화',   en:'AUTOMATION' },
+  expert: { color:'var(--cat-expert)', bg:'#f5f3ff',            border:'#e9d5ff',                icon:'i-expert', label:'설계 전문성',   en:'EXPERTISE' },
+  collab: { color:'var(--cat-collab)', bg:'#ecfeff',            border:'#cffafe',                icon:'i-collab', label:'협업',          en:'COLLAB' },
+  ext:    { color:'var(--cat-ext)',    bg:'#fff7ed',            border:'#fed7aa',                icon:'i-ext',    label:'확장성',        en:'EXTENSIBILITY' },
+  mob:    { color:'var(--cat-mob)',    bg:'#ecfdf5',            border:'#a7f3d0',                icon:'i-mob',    label:'이동성',        en:'MOBILITY' },
+  fb:     { color:'var(--cat-fb)',     bg:'#fdf2f8',            border:'#fbcfe8',                icon:'i-fb',     label:'사용자 의견',   en:'FEEDBACK' }
+};
+
+/* =========================================================
+   3.  진단 차원 & 유형 매핑 (변경 금지)
+   ========================================================= */
+const DIM_LABEL = {
+  auto: { kor:'업무 자동화',          en:'AUTOMATION' },
+  exp:  { kor:'설계 전문성',          en:'EXPERTISE' },
+  col:  { kor:'협업·데이터 호환',     en:'COLLABORATION' },
+  ext:  { kor:'확장성·커스터마이징',  en:'EXTENSIBILITY' },
+  mob:  { kor:'이동성·현장 활용',     en:'MOBILITY' }
+};
+const DIM_SHORT = {
+  auto: { kor:'업무 자동화', en:'AUTOMATION' },
+  exp:  { kor:'설계 전문성', en:'EXPERTISE' },
+  col:  { kor:'협업성',     en:'COLLAB' },
+  ext:  { kor:'확장성',     en:'EXT' },
+  mob:  { kor:'이동성',     en:'MOBILITY' }
+};
+
+const TYPE_MAP = {
+  'auto-exp':  { name:'생산성 디자이너',     eng:'Productivity-Driven Designer', emoji:'⚙️',
+    quote:'반복은 줄이고 정밀함은 높이는, 생산성 중심의 설계자.',
+    body:`고객님은 [업무 자동화]와 [설계 전문성]이 모두 강조된 <strong>생산성 디자이너</strong> 유형입니다.
+      반복적인 도면 작업을 자동화하면서도, 표준 부품·은선 처리·치수 공차 등 <strong>고난도 기계 설계 정밀도</strong>를 동시에 추구합니다.
+      <strong>AutoCAD Mechanical(Toolset)</strong>의 강력한 표준 부품 라이브러리와 자동 BOM 기능, Smart Block 기반 자동화를 결합하면, 설계 시간을 절반 이하로 단축하면서도 품질은 더 높일 수 있습니다.` },
+  'exp-mob':   { name:'현장 지휘관',         eng:'Field-Oriented CAD Expert', emoji:'📱',
+    quote:'사무실의 워크스테이션을 태블릿에 담으십시오. 가장 정교한 설계가 가장 가벼워지는 순간입니다.',
+    body:`고객님은 <strong>설계 전문성</strong>과 <strong>이동성</strong>이 모두 필요한 ‘현장 지휘관’ 유형입니다.
+      사무실에서는 기계, 건축, 플랜트 등 고난도의 전문 설계를 수행하고, 현장에서는 그 데이터를 기반으로 즉각적인 의사결정을 내려야 합니다.
+      하지만 전문화 툴셋(Toolsets)으로 작성된 복잡한 도면(Layer, Object 정보 포함)은 단순한 PDF나 출력물로는 그 디테일을 확인할 수 없습니다. 그렇다고 무거운 노트북을 들고 비계를 오를 수도 없는 노릇입니다.
+      이제 <strong>AutoCAD Toolset</strong>의 강력한 기능으로 사무실에서 정교한 3D 모델과 속성 정보를 완성하시고, 현장에서는 <strong>AutoCAD Web(Mobile)</strong>을 통해 태블릿으로 그 데이터를 여십시오. 수천 개의 부품이 들어간 도면도 클라우드 기술을 통해 가볍게 열리며, 현장에서 즉시 치수를 재고 속성(Property)을 확인할 수 있습니다.
+      ‘만드는 것은 깊이 있게(Toolset), 확인은 가볍게(Mobile)’ — 이 두 가지 무기를 결합할 때, 고객님의 전문성은 사무실을 넘어 현장까지 완벽하게 확장됩니다.` },
+  'col-exp':   { name:'협업 마에스트로',     eng:'Collaboration Maestro', emoji:'🤝',
+    quote:'전문 설계가 팀의 속도를 만들 때, 진정한 협업이 시작됩니다.',
+    body:`고객님은 [설계 전문성]과 [협업 및 데이터호환성]이 모두 강조된 <strong>협업 마에스트로</strong> 유형입니다.
+      복잡한 설계를 다루면서도 팀원·협력사·발주처와 끊임없이 도면을 주고받기 때문에, 버전 관리·마크업·실시간 공유가 핵심 페인포인트입니다.
+      <strong>AutoCAD Toolset</strong>으로 정교한 도면을 만든 뒤, <strong>AutoCAD Web/Mobile</strong>의 클라우드 마크업과 자동 버전 관리를 활용하면 “진짜최종_v2” 같은 비효율을 근본적으로 해결할 수 있습니다.` },
+  'col-mob':   { name:'클라우드 협업가',     eng:'Cloud-Based Collaborator', emoji:'☁️',
+    quote:'언제 어디서나 모두가 같은 도면을 보는 것 — 그것이 협업의 시작입니다.',
+    body:`고객님은 [협업]과 [이동성]이 모두 강조된 <strong>클라우드 협업가</strong> 유형입니다.
+      현장과 사무실, 협력사 간 실시간 도면 공유와 마크업이 업무의 핵심입니다. 보안과 용량 문제로 이메일 첨부의 한계를 자주 느끼셨을 것입니다.
+      <strong>AutoCAD Web</strong> 기반의 클라우드 워크플로우로 모든 기기에서 같은 최신 도면을 확인하고, 실시간으로 마크업을 주고받아 협업의 속도를 비약적으로 끌어올릴 수 있습니다.` },
+  'auto-ext':  { name:'커스터마이징 전문가', eng:'Customization Expert', emoji:'🛠️',
+    quote:'사내 표준에 최적화된 자동화 — 그것이 진짜 경쟁력입니다.',
+    body:`고객님은 [업무 자동화]와 [확장성/커스터마이징]이 모두 강조된 <strong>커스터마이징 전문가</strong> 유형입니다.
+      LISP·매크로·서드파티 프로그램·ERP 연동 등 사내 환경에 깊이 맞춤화된 워크플로우를 운영하고 계십니다.
+      <strong>AutoCAD Plus</strong>의 다양한 Toolset과 API 환경, .NET·LISP 확장성을 적극 활용하면 사내 자동화 자산을 더 강력하게 통합·확장할 수 있습니다.` },
+  'auto-mob':  { name:'스마트 모빌리티 설계자', eng:'Smart Mobility Designer', emoji:'⚡',
+    quote:'자동화된 설계, 어디서나 즉시 — 모바일 시대의 설계 방식.',
+    body:`고객님은 [업무 자동화]와 [이동성]이 모두 강조된 <strong>스마트 모빌리티 설계자</strong> 유형입니다.
+      반복 작업은 자동화로 줄이고, 결과물은 모바일·태블릿으로 어디서든 확인하는 효율적 워크플로우를 추구합니다.
+      <strong>AutoCAD Web/Mobile</strong>과 자동화 스크립트를 결합하면 사무실·현장·외근 어느 환경에서도 끊김 없는 설계 흐름을 만들 수 있습니다.` },
+  'auto-col':  { name:'프로세스 통합가',     eng:'Process Integrator', emoji:'🔗',
+    quote:'개인의 자동화를 팀의 표준으로 — 통합된 프로세스가 만드는 차이.',
+    body:`고객님은 [업무 자동화]와 [협업]이 모두 강조된 <strong>프로세스 통합가</strong> 유형입니다.
+      자동화로 만든 효율을 팀 전체로 확산시키고, 클라우드 기반 협업으로 일관된 품질을 유지하는 것이 핵심입니다.
+      <strong>AutoCAD Plus + Web</strong> 조합으로 자동화 자산과 협업 환경을 동시에 구축할 수 있습니다.` },
+  'exp-ext':   { name:'전문 자동화 마스터', eng:'Expert Automation Master', emoji:'🎯',
+    quote:'정밀한 설계와 강력한 확장성 — 두 마리 토끼를 모두 잡는 마스터.',
+    body:`고객님은 [설계 전문성]과 [확장성]이 모두 강조된 <strong>전문 자동화 마스터</strong> 유형입니다.
+      고난도 기계·플랜트 설계를 LISP·서드파티·ERP 연동으로 더욱 강력하게 확장하고 계십니다.
+      <strong>AutoCAD Plus(Mechanical/Plant 3D 등)</strong>로 산업별 전용 기능과 표준 부품 라이브러리를 활용하면 전문성과 확장성을 동시에 극대화할 수 있습니다.` },
+  'col-ext':   { name:'시스템 연동 협업가', eng:'System-Integrated Collaborator', emoji:'🌐',
+    quote:'데이터가 흐르는 협업 — 시스템과 사람을 잇는 디지털 워크플로우.',
+    body:`고객님은 [협업]과 [확장성]이 모두 강조된 <strong>시스템 연동 협업가</strong> 유형입니다.
+      ERP/PLM 등 기간계 시스템과 도면 데이터를 연동하여 팀 단위로 효율적인 협업 환경을 구축하고자 합니다.
+      <strong>AutoCAD Web + 자동화 API</strong>를 통해 데이터 호환성과 협업 효율을 동시에 잡을 수 있습니다.` },
+  'ext-mob':   { name:'유연한 확장 워커',   eng:'Flexible Extension Worker', emoji:'🚀',
+    quote:'커스터마이징과 모바일 — 가장 유연한 설계 환경을 만드는 조합.',
+    body:`고객님은 [확장성]과 [이동성]이 모두 강조된 <strong>유연한 확장 워커</strong> 유형입니다.
+      사내 자동화·서드파티 활용은 물론 모바일 환경까지 모두 다루는 멀티 플레이어입니다.
+      <strong>AutoCAD Plus + Web</strong>로 확장성과 이동성을 모두 충족시키는 환경을 구성해보시기 바랍니다.` }
+};
+
+const RECOS = {
+  plus: { name:'AutoCAD Plus', icon:'A', tagline:'INDUSTRY-SPECIALIZED TOOLSETS',
+    desc:'AutoCAD에 산업별 특화 기능을 더한 7개 프로그램이 포함된 통합 패키지. 기계·건축·전기·플랜트 등 전문 분야에 최적화된 라이브러리와 자동화 도구를 제공합니다.',
+    chips:['Mechanical','Architecture','Electrical','Plant 3D','MEP','Map 3D','Raster Design'],
+    accent:true },
+  web:  { name:'AutoCAD Web', icon:'A', tagline:'CLOUD-BASED & MOBILE-READY',
+    desc:'설치 없이 브라우저에서 즉시 사용 가능한 웹 기반 CAD. 모든 기기에서 동일한 최신 파일을 확인하고, 실시간 협업과 마크업으로 팀 전체의 작업 속도를 끌어올립니다.',
+    chips:['No-install','Real-time Sync','Mobile','Markup','Cloud Storage'] },
+  lt:   { name:'AutoCAD LT', icon:'A', tagline:'ESSENTIAL 2D DRAFTING',
+    desc:'2D 드래프팅 핵심 기능에 집중한 경량 버전. 합리적인 비용으로 단순 도면 작업에 최적화되어 있습니다.',
+    chips:['2D Drafting','Lightweight','Budget-friendly'] },
+  std:  { name:'AutoCAD', icon:'A', tagline:'INDUSTRY STANDARD',
+    desc:'업계 표준 2D/3D CAD. LISP·.NET·VBA 등 폭넓은 커스터마이징을 지원하며, 대부분의 산업과 업무 영역에서 활용할 수 있습니다.',
+    chips:['2D & 3D','LISP','.NET API','VBA'] }
+};
+
+/* =========================================================
+   4.  STATE
+   ========================================================= */
+const state = { step:0, answers:{}, userName:'사용자' };
+
+/* =========================================================
+   5.  UTIL
+   ========================================================= */
+const $  = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
+const content = $('#content');
+const topBar = $('#topBar');
+const navBar = $('#navBar');
+const TOTAL = QUESTIONS.length;
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+function showToast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+/* — IntersectionObserver based reveal — */
+let revealObs;
+function setupReveal() {
+  if (revealObs) revealObs.disconnect();
+  revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.05, rootMargin: '0px 0px -8% 0px' });
+  $$('.reveal').forEach(el => revealObs.observe(el));
+}
+
+/* =========================================================
+   6.  INTRO
+   ========================================================= */
+function renderIntro() {
+  topBar.hidden = true;
+  navBar.hidden = true;
+  content.innerHTML = `
+    <div class="slide intro">
+      <div class="intro-tag reveal">
+        <span class="tag-dot"></span>
+        <span>CAD Diagnosis · v1.0</span>
+      </div>
+
+      <h1 class="intro-headline reveal" data-d="1">
+        당신의 설계 워크플로는<br>
+        <em>어떤 유형</em>입니까?
+      </h1>
+
+      <p class="intro-sub reveal" data-d="2">
+        21개의 정밀한 질문으로 5개 핵심 영역을 진단하고,<br>
+        당신의 설계 방식에 가장 적합한 CAD 솔루션을 추천합니다.
+      </p>
+
+      <div class="intro-illu reveal" data-d="3">
+        <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <pattern id="introGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" stroke-width=".5" opacity=".15"/>
+            </pattern>
+            <linearGradient id="introBracketGrad" x1="0" x2="1">
+              <stop offset="0" stop-color="#ff2e63" stop-opacity=".0"/>
+              <stop offset=".5" stop-color="#ff2e63" stop-opacity=".5"/>
+              <stop offset="1" stop-color="#ff2e63" stop-opacity=".0"/>
+            </linearGradient>
+          </defs>
+          <rect width="380" height="220" fill="url(#introGrid)" color="currentColor" opacity=".7"/>
+
+          <!-- Technical part outline -->
+          <g stroke="currentColor" stroke-width="1.4" fill="none" opacity=".85">
+            <path d="M70 70 L210 70 Q230 70 230 90 L230 150 Q230 170 210 170 L70 170 Z"/>
+            <circle cx="110" cy="120" r="22"/>
+            <circle cx="180" cy="120" r="22"/>
+            <line x1="110" y1="98" x2="110" y2="142" stroke-dasharray="3 3"/>
+            <line x1="88"  y1="120" x2="132" y2="120" stroke-dasharray="3 3"/>
+            <line x1="180" y1="98" x2="180" y2="142" stroke-dasharray="3 3"/>
+            <line x1="158" y1="120" x2="202" y2="120" stroke-dasharray="3 3"/>
+            <!-- Detail callout -->
+            <circle cx="270" cy="80" r="32" stroke-dasharray="2 4" opacity=".5"/>
+            <line x1="225" y1="105" x2="248" y2="92" opacity=".5"/>
+          </g>
+
+          <!-- Highlight pulse on hole -->
+          <circle cx="110" cy="120" r="22" fill="#ff2e63" opacity=".15">
+            <animate attributeName="r" values="22;28;22" dur="2.4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values=".25;0;.25" dur="2.4s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- Dimension lines -->
+          <g stroke="#ff2e63" stroke-width="1" fill="#ff2e63">
+            <line x1="70" y1="195" x2="230" y2="195"/>
+            <line x1="70" y1="190" x2="70" y2="200"/>
+            <line x1="230" y1="190" x2="230" y2="200"/>
+            <rect x="135" y="186" width="30" height="13" fill="white" stroke="none"/>
+            <text x="150" y="196" text-anchor="middle" font-size="10" font-family="JetBrains Mono" font-weight="600">160.0</text>
+          </g>
+          <g stroke="#ff2e63" stroke-width="1" fill="#ff2e63">
+            <line x1="252" y1="70" x2="252" y2="170"/>
+            <line x1="247" y1="70" x2="257" y2="70"/>
+            <line x1="247" y1="170" x2="257" y2="170"/>
+            <rect x="244" y="113" width="20" height="13" fill="white" stroke="none"/>
+            <text x="254" y="123" text-anchor="middle" font-size="10" font-family="JetBrains Mono" font-weight="600">100</text>
+          </g>
+
+          <!-- Corner brackets -->
+          <g stroke="url(#introBracketGrad)" stroke-width="1.2" fill="none">
+            <path d="M30 30 L30 50 M30 30 L50 30"/>
+            <path d="M350 30 L350 50 M350 30 L330 30"/>
+            <path d="M30 200 L30 180 M30 200 L50 200"/>
+            <path d="M350 200 L350 180 M350 200 L330 200"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="trust-cards reveal" data-d="4">
+        <div class="trust-card">
+          <div class="trust-num">~5<span>min</span></div>
+          <div class="trust-lbl">예상 소요</div>
+        </div>
+        <div class="trust-card">
+          <div class="trust-num">${TOTAL}</div>
+          <div class="trust-lbl">진단 질문</div>
+        </div>
+        <div class="trust-card">
+          <div class="trust-num">10<span>+</span></div>
+          <div class="trust-lbl">진단 유형</div>
+        </div>
+      </div>
+
+      <div class="reveal" data-d="5">
+        <div class="name-input-wrap">
+          <input class="name-input" id="userName" type="text" maxlength="12" placeholder="이름을 입력해 주세요 (선택)" />
+        </div>
+        <button class="btn-cta" type="button" onclick="startSurvey()">
+          <span>진단 시작하기</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg>
+        </button>
+        <p class="intro-foot">개인정보는 수집되지 않으며, 모든 진단은 브라우저 내에서 처리됩니다.</p>
+      </div>
+    </div>
+  `;
+  setupReveal();
+}
+
+window.startSurvey = function() {
+  const name = ($('#userName')?.value || '').trim();
+  if (name) state.userName = name;
+  state.step = 1;
+  renderQuestion();
+};
+
+/* =========================================================
+   7.  QUESTION
+   ========================================================= */
+function renderProgressMilestones() {
+  const m = $('#progressMilestones');
+  if (!m) return;
+  // 4 milestones at 25/50/75/100
+  m.innerHTML = '<span></span><span></span><span></span><span></span>';
+  const pct = (state.step / TOTAL) * 100;
+  m.querySelectorAll('span').forEach((s, i) => {
+    const at = (i + 1) * 25;
+    if (pct >= at - 1) s.classList.add('passed');
+  });
+}
+
+function renderQuestion() {
+  topBar.hidden = false;
+  navBar.hidden = false;
+  const idx = state.step - 1;
+  const q = QUESTIONS[idx];
+  const meta = CAT_META[q.catKey] || CAT_META.info;
+
+  $('#stepCur').textContent = pad(state.step);
+  $('#stepTotal').textContent = TOTAL;
+  $('#progress').style.width = ((state.step / TOTAL) * 100) + '%';
+  renderProgressMilestones();
+
+  // — Options —
+  let optionHtml = '';
+  if (q.type === 'text') {
+    optionHtml = `<textarea class="opt-text" id="textInput" placeholder="${escapeHtml(q.placeholder || '')}">${escapeHtml(state.answers[q.id] || '')}</textarea>`;
+  } else {
+    const layout = q.layout === 'grid-2' ? 'grid-2' : '';
+    optionHtml = `<div class="options ${layout}">${
+      q.options.map((opt, i) => {
+        const label = typeof opt === 'string' ? opt : opt.label;
+        const desc  = typeof opt === 'object' && opt.desc ? `<span class="opt-desc">${escapeHtml(opt.desc)}</span>` : '';
+        const sel = isOptionSelected(q, i) ? 'selected' : '';
+        return `<button class="opt ${sel}" data-i="${i}" type="button" onclick="selectOpt(${i})">
+          <span class="opt-check"><svg viewBox="0 0 16 16"><use href="#i-check"/></svg></span>
+          <span class="opt-body">
+            <span class="opt-label">${escapeHtml(label)}</span>
+            ${desc}
+          </span>
+        </button>`;
+      }).join('')
+    }</div>`;
+  }
+
+  const imgHtml = q.img ? `<div class="q-image"></div>` : '';
+  const subHtml = q.sub ? `<div class="q-sub">${escapeHtml(q.sub)}</div>` : '';
+
+  content.innerHTML = `
+    <div class="slide" style="--cat-color:${meta.color};--cat-bg:${meta.bg};--cat-border:${meta.border}">
+      <div class="q-meta">
+        <span class="num">${pad(state.step)}</span>
+        <span class="sep">/</span>
+        <span>${pad(TOTAL)}</span>
+        <span class="sep">·</span>
+        <span class="cat">${meta.en}</span>
+      </div>
+      <span class="q-badge">
+        <svg><use href="#${meta.icon}"/></svg>
+        ${escapeHtml(q.cat)}
+      </span>
+      <h2 class="q-title">${escapeHtml(q.q)}</h2>
+      ${subHtml}
+      ${imgHtml}
+      ${optionHtml}
+    </div>
+  `;
+
+  if (q.type === 'text') {
+    const ta = $('#textInput');
+    ta.addEventListener('input', () => { state.answers[q.id] = ta.value; updateNav(); });
+  }
+
+  updateNav();
+}
+
+function isOptionSelected(q, i) {
+  const a = state.answers[q.id];
+  if (a === undefined) return false;
+  if (q.type === 'multi') return Array.isArray(a) && a.includes(i);
+  return a === i;
+}
+
+window.selectOpt = function(i) {
+  const q = QUESTIONS[state.step - 1];
+  if (q.type === 'multi') {
+    const cur = Array.isArray(state.answers[q.id]) ? [...state.answers[q.id]] : [];
+    const at = cur.indexOf(i);
+    if (at >= 0) cur.splice(at, 1); else cur.push(i);
+    state.answers[q.id] = cur;
+  } else {
+    state.answers[q.id] = i;
+  }
+  renderQuestion();
+  if (q.type === 'single') setTimeout(() => goNext(), 320);
+};
+
+function updateNav() {
+  $('#btnPrev').disabled = state.step <= 1;
+  const q = QUESTIONS[state.step - 1];
+  let canNext = false;
+  if (!q) canNext = true;
+  else if (q.type === 'text') canNext = true;
+  else if (q.type === 'multi') canNext = Array.isArray(state.answers[q.id]) && state.answers[q.id].length > 0;
+  else canNext = state.answers[q.id] !== undefined;
+  $('#btnNext').disabled = !canNext;
+  const lbl = (state.step === TOTAL) ? '결과 보기' : '다음';
+  $('#btnNext').firstChild.textContent = lbl;
+}
+
+function goNext() {
+  const q = QUESTIONS[state.step - 1];
+  if (!q) return;
+  if (q.type === 'multi' && (!state.answers[q.id] || state.answers[q.id].length === 0)) {
+    showToast('하나 이상 선택해주세요'); return;
+  }
+  if (q.type === 'single' && state.answers[q.id] === undefined) {
+    showToast('선택해주세요'); return;
+  }
+  if (state.step >= TOTAL) {
+    renderResult();
+  } else {
+    state.step++;
+    renderQuestion();
+    window.scrollTo({top: 0, behavior:'smooth'});
+  }
+}
+function goPrev() {
+  if (state.step <= 1) return;
+  state.step--;
+  renderQuestion();
+  window.scrollTo({top: 0, behavior:'smooth'});
+}
+
+$('#btnNext').addEventListener('click', goNext);
+$('#btnPrev').addEventListener('click', goPrev);
+
+/* =========================================================
+   8.  점수 계산 & 진단 (변경 금지)
+   ========================================================= */
+function calcScores() {
+  const buckets = { auto:[], exp:[], col:[], ext:[], mob:[] };
+  QUESTIONS.forEach(q => {
+    if (!q.dim || !q.weight) return;
+    const a = state.answers[q.id];
+    if (a === undefined || a === null) return;
+    const w = q.weight[a];
+    if (typeof w !== 'number') return;
+    buckets[q.dim].push(w);
+  });
+  const scores = {};
+  for (const k in buckets) {
+    const arr = buckets[k];
+    scores[k] = arr.length ? Math.round(arr.reduce((a,b) => a+b, 0) / arr.length) : 0;
+  }
+  return scores;
+}
+
+function diagnoseType(scores) {
+  const sorted = Object.entries(scores).sort((a,b) => b[1] - a[1]);
+  const top = sorted.slice(0, 2).map(x => x[0]).sort();
+  const key = top.join('-');
+  return TYPE_MAP[key] || TYPE_MAP['exp-mob'];
+}
+
+function evalTag(score) {
+  if (score >= 80) return { cls:'eval-strategic', txt:'전략적 개선이 필요한 단계' };
+  if (score >= 50) return { cls:'eval-improve',   txt:'개선 효과가 명확한 단계' };
+  return                { cls:'eval-strong',     txt:'안정적인 단계' };
+}
+
+function recommendCAD(scores) {
+  const list = [];
+  if (scores.exp >= 60 || scores.ext >= 60) list.push('plus');
+  if (scores.mob >= 50 || scores.col >= 60) list.push('web');
+  if (list.length === 0) list.push('std');
+  return list.map(k => RECOS[k]);
+}
+
+/* =========================================================
+   9.  RADAR CHART (premium)
+   ========================================================= */
+function renderRadar(scores) {
+  const dims = ['auto','exp','col','ext','mob'];
+  const labels = dims.map(d => DIM_LABEL[d]);
+  const values = dims.map(d => scores[d] || 0);
+
+  const W = 400, H = 380;
+  const cx = W / 2, cy = H / 2 - 6;
+  const R = 116;
+  const N = dims.length;
+  const ang = i => (Math.PI * 2 * i / N) - Math.PI / 2;
+
+  const polyOf = (vals, scale = 1) => vals.map((v, i) => {
+    const r = (v / 100) * R * scale;
+    return [cx + Math.cos(ang(i)) * r, cy + Math.sin(ang(i)) * r];
+  }).map(p => p.join(',')).join(' ');
+
+  // grid: 100% solid, others dashed
+  const gridLevels = [.2, .4, .6, .8, 1];
+  const grid = gridLevels.map((s, idx) => {
+    const pts = Array.from({length: N}, (_, i) => {
+      const r = R * s;
+      return [cx + Math.cos(ang(i)) * r, cy + Math.sin(ang(i)) * r].join(',');
+    }).join(' ');
+    const cls = idx === gridLevels.length - 1 ? 'radar-grid-solid' : 'radar-grid-dot';
+    return `<polygon class="${cls}" points="${pts}"/>`;
+  }).join('');
+
+  // axes
+  const axes = labels.map((_, i) => {
+    const x = cx + Math.cos(ang(i)) * R;
+    const y = cy + Math.sin(ang(i)) * R;
+    return `<line class="radar-axis-line" x1="${cx}" y1="${cy}" x2="${x}" y2="${y}"/>`;
+  }).join('');
+
+  // data polygon (animated reveal)
+  const data = `<polygon class="radar-data" points="${polyOf(values)}"/>`;
+
+  // vertices + score pills
+  const verticesHtml = values.map((v, i) => {
+    const r = (v / 100) * R;
+    const x = cx + Math.cos(ang(i)) * r;
+    const y = cy + Math.sin(ang(i)) * r;
+    return `<circle class="radar-vertex" cx="${x}" cy="${y}" r="4.5"/>`;
+  }).join('');
+
+  const pillsHtml = values.map((v, i) => {
+    const r = (v / 100) * R;
+    const x = cx + Math.cos(ang(i)) * r;
+    const y = cy + Math.sin(ang(i)) * r;
+    // offset pill toward center slightly so it doesn't overlap label
+    const offX = -Math.cos(ang(i)) * 14;
+    const offY = -Math.sin(ang(i)) * 14;
+    return `<g transform="translate(${x + offX},${y + offY})">
+      <rect class="radar-pill-bg" x="-15" y="-9" width="30" height="18" rx="9"/>
+      <text class="radar-pill-text" x="0" y="0" text-anchor="middle" dy="3.5">${v}</text>
+    </g>`;
+  }).join('');
+
+  // axis labels (outside)
+  const labelsHtml = labels.map((lab, i) => {
+    const lr = R + 32;
+    const x = cx + Math.cos(ang(i)) * lr;
+    const y = cy + Math.sin(ang(i)) * lr;
+    let anchor = 'middle';
+    const ax = Math.cos(ang(i));
+    if (ax > .25) anchor = 'start';
+    else if (ax < -.25) anchor = 'end';
+
+    const parts = lab.kor.split('·');
+    if (parts.length === 2) {
+      return `<g>
+        <text class="radar-axis-label" x="${x}" y="${y - 6}" text-anchor="${anchor}">${parts[0]}·</text>
+        <text class="radar-axis-label" x="${x}" y="${y + 8}" text-anchor="${anchor}">${parts[1]}</text>
+        <text class="radar-axis-label-en" x="${x}" y="${y + 22}" text-anchor="${anchor}">${lab.en}</text>
+      </g>`;
+    }
+    return `<g>
+      <text class="radar-axis-label" x="${x}" y="${y + 2}" text-anchor="${anchor}">${lab.kor}</text>
+      <text class="radar-axis-label-en" x="${x}" y="${y + 16}" text-anchor="${anchor}">${lab.en}</text>
+    </g>`;
+  }).join('');
+
+  // guide texts (100 / 50 markers on top axis)
+  const topX = cx, topY = cy - R;
+  const midY = cy - R * 0.5;
+  const guides = `
+    <text class="radar-guide" x="${topX + 8}" y="${topY + 4}">100</text>
+    <text class="radar-guide" x="${topX + 8}" y="${midY + 4}">50</text>
+  `;
+
+  return `
+    <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="radarGrad" cx="50%" cy="50%" r="58%">
+          <stop offset="0%" stop-color="#ff2e63" stop-opacity=".42"/>
+          <stop offset="60%" stop-color="#ff2e63" stop-opacity=".22"/>
+          <stop offset="100%" stop-color="#ff2e63" stop-opacity=".06"/>
+        </radialGradient>
+      </defs>
+      ${grid}
+      ${axes}
+      ${guides}
+      ${data}
+      ${verticesHtml}
+      ${pillsHtml}
+      ${labelsHtml}
+    </svg>
+  `;
+}
+
+/* =========================================================
+   10.  COUNT-UP ANIMATION
+   ========================================================= */
+function countUp(el, to, duration = 1200) {
+  const start = performance.now();
+  const from = 0;
+  function tick(now) {
+    const t = Math.min(1, (now - start) / duration);
+    const e = 1 - Math.pow(1 - t, 3); // ease-out-cubic
+    el.textContent = Math.round(from + (to - from) * e);
+    if (t < 1) requestAnimationFrame(tick);
+    else el.textContent = to;
+  }
+  requestAnimationFrame(tick);
+}
+
+/* =========================================================
+   11.  RESULT
+   ========================================================= */
+function renderResult() {
+  const scores = calcScores();
+  const type = diagnoseType(scores);
+  const recos = recommendCAD(scores);
+
+  topBar.hidden = true;
+  navBar.hidden = true;
+
+  // — Score order matches PDF —
+  const order = ['auto','exp','ext','mob','col'];
+
+  const rows = order.map(k => {
+    const s = scores[k] || 0;
+    const ev = evalTag(s);
+    const milestones = [1,2,3,4].map(() => '<span></span>').join('');
+    return `
+      <div class="score-row reveal" data-d="${order.indexOf(k) + 1}">
+        <div class="score-label-wrap">
+          <div class="score-label">${DIM_SHORT[k].kor}</div>
+          <div class="score-label-en">${DIM_SHORT[k].en}</div>
+        </div>
+        <div>
+          <div class="score-bar">
+            <div class="score-bar-track">
+              <div class="score-bar-fill" data-w="${s}"></div>
+              <div class="score-bar-milestones">${milestones}</div>
+            </div>
+          </div>
+          <div class="score-eval ${ev.cls}">${ev.txt}</div>
+        </div>
+        <div class="score-num" data-target="${s}">0</div>
+      </div>
+    `;
+  }).join('');
+
+  const recoHtml = recos.map((r, idx) => {
+    const isAccent = r.accent;
+    const chips = r.chips.map((c, i) => {
+      const accent = isAccent && i === 0 ? 'chip-accent' : '';
+      return `<span class="chip ${accent}">${escapeHtml(c)}</span>`;
+    }).join('');
+    return `
+      <div class="reco-card reveal" data-d="${idx + 1}">
+        <div class="reco-header">
+          <div class="reco-logo">${r.icon}</div>
+          <div class="reco-title">
+            <div class="reco-name">${escapeHtml(r.name)}</div>
+            <div class="reco-tagline">${escapeHtml(r.tagline)}</div>
+          </div>
+        </div>
+        <div class="reco-body">
+          <p class="reco-desc">${escapeHtml(r.desc)}</p>
+          <div class="reco-chips">${chips}</div>
+          <button class="reco-cta" type="button">
+            자세히 알아보기
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Drop cap on body first paragraph
+  const bodyHtml = type.body
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map((p, i) => i === 0 ? `<p><span class="dropcap">${p[0]}</span>${p.slice(1)}</p>` : `<p>${p}</p>`)
+    .join('');
+
+  content.innerHTML = `
+    <div class="slide result">
+
+      <!-- HERO -->
+      <div class="r-hero">
+        <div class="r-hero-eyebrow reveal"><b>DIAGNOSIS</b> · COMPLETE</div>
+        <div class="r-hero-name reveal" data-d="1"><b>${escapeHtml(state.userName)}</b>님의 설계 진단 결과</div>
+        <div class="r-hero-type reveal" data-d="2"><em>${escapeHtml(type.name)}</em>형</div>
+        <div class="r-hero-eng reveal" data-d="3">${escapeHtml(type.eng)}</div>
+      </div>
+
+      <!-- 1. CHART -->
+      <section class="r-section">
+        <div class="r-section-head">
+          <div class="r-section-title">핵심 요약 지표</div>
+          <div class="r-section-num">01 / 03</div>
+        </div>
+        <div class="r-card reveal">
+          <div class="r-card-pad">
+            <div class="radar-head">
+              <div class="radar-head-title">5-Dimension Profile</div>
+              <div class="radar-head-tag">RADAR · 0-100</div>
+            </div>
+            <div class="radar-wrap">${renderRadar(scores)}</div>
+            <div class="radar-legend">
+              <span><span class="radar-legend-dot"></span>Your Score</span>
+              <span>Max 100</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. SCORES -->
+      <section class="r-section">
+        <div class="r-section-head">
+          <div class="r-section-title">항목별 점수 및 분석</div>
+          <div class="r-section-num">02 / 03</div>
+        </div>
+        <div class="r-card">
+          <div class="r-card-pad">
+            <div class="scores">${rows}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. SUMMARY -->
+      <section class="r-section">
+        <div class="r-section-head">
+          <div class="r-section-title">종합 진단평</div>
+          <div class="r-section-num">03 / 03</div>
+        </div>
+        <div class="r-card reveal">
+          <div class="summary">
+            <div class="summary-quote-mark">"</div>
+            <div class="summary-emoji">${type.emoji}</div>
+            <div class="summary-eng"><em>${escapeHtml(type.eng)}</em></div>
+            <div class="summary-kor">${escapeHtml(type.name)}형</div>
+            <div class="summary-quote">${escapeHtml(type.quote)}</div>
+            <div class="summary-body">${bodyHtml}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RECOMMENDATIONS -->
+      <section class="r-section">
+        <div class="r-section-head">
+          <div class="r-section-title">맞춤 CAD 솔루션</div>
+          <div class="r-section-num">RECO</div>
+        </div>
+        <div class="reco-grid">${recoHtml}</div>
+      </section>
+
+      <!-- ACTIONS -->
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="window.print()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5 V2 h8 v3 M4 12 H2 V8 a1 1 0 011-1 h10 a1 1 0 011 1 v4 h-2 M4 10 h8 v4 H4 z"/></svg>
+          결과 인쇄
+        </button>
+        <button class="btn btn-secondary" onclick="restart()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8 a6 6 0 1011-3.5 M13 2 v3 h-3"/></svg>
+          처음으로
+        </button>
+      </div>
+
+    </div>
+  `;
+
+  // Animate score bars + count-up
+  setTimeout(() => {
+    $$('.score-bar-fill').forEach(b => b.style.width = b.dataset.w + '%');
+    $$('.score-num').forEach(el => countUp(el, parseInt(el.dataset.target, 10) || 0));
+  }, 240);
+
+  setupReveal();
+  window.scrollTo({top: 0, behavior:'smooth'});
+}
+
+window.restart = function() {
+  state.step = 0;
+  state.answers = {};
+  state.userName = '사용자';
+  renderIntro();
+  window.scrollTo({top: 0});
+};
+
+/* =========================================================
+   12.  KEYBOARD
+   ========================================================= */
+document.addEventListener('keydown', e => {
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+  if (e.key === 'ArrowRight' || e.key === 'Enter') {
+    if (!navBar.hidden && !$('#btnNext').disabled) goNext();
+  }
+  if (e.key === 'ArrowLeft') {
+    if (!navBar.hidden && !$('#btnPrev').disabled) goPrev();
+  }
+});
+
+/* =========================================================
+   INIT
+   ========================================================= */
+renderIntro();
+</script>
+</body>
+</html>
