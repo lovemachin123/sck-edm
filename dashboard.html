@@ -189,12 +189,20 @@ h1 {
 }
 .type-chart {
   display:grid;
-  grid-template-columns:260px 1fr;
-  gap:20px;
-  align-items:center;
+  grid-template-columns:300px 1fr;
+  gap:24px;
+  align-items:stretch;
 }
-.type-donut-wrap { display:grid; place-items:center; }
-.type-donut { width:220px; height:220px; }
+.type-donut-wrap {
+  display:grid;
+  place-items:center;
+  min-height:280px;
+  border:1px solid var(--border);
+  border-radius:var(--r-4);
+  background:
+    linear-gradient(180deg, var(--surface-soft), var(--surface));
+}
+.type-donut { width:230px; height:230px; }
 .type-donut text {
   font-family:var(--f-display);
   fill:var(--ink);
@@ -213,25 +221,30 @@ h1 {
 }
 .type-main {
   display:grid;
-  gap:16px;
+  gap:14px;
 }
 .axis-list {
   display:grid;
-  grid-template-columns:repeat(2, 1fr);
-  gap:8px;
+  grid-template-columns:repeat(5, minmax(0, 1fr));
+  gap:10px;
 }
 .axis-chip {
   border:1px solid var(--border);
-  border-radius:var(--r-3);
+  border-radius:var(--r-2);
   background:var(--surface-soft);
-  padding:11px 12px;
+  padding:12px;
+  min-width:0;
 }
 .axis-chip b {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
+  display:grid;
+  gap:6px;
   font-size:12.5px;
+}
+.axis-chip em {
+  font-family:var(--f-mono);
+  font-size:18px;
+  font-style:normal;
+  color:var(--ink);
 }
 .axis-chip span {
   display:block;
@@ -248,22 +261,57 @@ h1 {
   letter-spacing:.08em;
   text-transform:uppercase;
 }
+.type-panel {
+  border:1px solid var(--border);
+  border-radius:var(--r-4);
+  background:var(--surface);
+  padding:16px;
+}
+.type-panel + .type-panel { margin-top:12px; }
+.type-pair-grid {
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:10px;
+  margin-top:10px;
+}
+.type-pair-card {
+  background:var(--surface-soft);
+  border:1px solid var(--border);
+  border-radius:var(--r-2);
+  padding:12px;
+}
+.type-pair-card b {
+  display:block;
+  font-size:13px;
+  color:var(--ink);
+}
+.type-pair-card span {
+  display:block;
+  margin-top:4px;
+  font-family:var(--f-mono);
+  font-size:11px;
+  color:var(--text-faint);
+}
 .type-row {
   display:grid;
-  grid-template-columns:minmax(150px, 240px) 1fr 72px;
+  grid-template-columns:minmax(220px, 320px) 1fr 82px;
   gap:12px;
   align-items:center;
+  padding:9px 0;
+  border-bottom:1px solid var(--border);
+}
+.type-row:last-child {
+  border-bottom:0;
 }
 .type-name {
   min-width:0;
-  font-size:12px;
+  font-size:12.5px;
   font-weight:800;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+  line-height:1.35;
+  white-space:normal;
 }
 .type-track {
-  height:12px;
+  height:14px;
   overflow:hidden;
   border-radius:var(--r-pill);
   background:var(--surface-soft);
@@ -283,9 +331,10 @@ h1 {
   color:var(--ink);
 }
 .type-note {
-  margin-top:10px;
+  margin-top:12px;
   font-size:12px;
   color:var(--text-mute);
+  line-height:1.6;
 }
 .insight-grid {
   display:grid;
@@ -575,6 +624,7 @@ td:first-child {
 @media (max-width:900px) {
   .kpis { grid-template-columns:repeat(2, 1fr); }
   .grid, .score-grid, .insight-grid, .type-chart { grid-template-columns:1fr; }
+  .axis-list, .type-pair-grid { grid-template-columns:repeat(2, 1fr); }
 }
 @media (max-width:560px) {
   .shell { width:calc(100% - 20px); padding-top:18px; }
@@ -582,7 +632,7 @@ td:first-child {
   h1 { font-size:28px; }
   .hero { padding:20px; }
   .kpis, .customer-grid, .login-actions { grid-template-columns:1fr; }
-  .axis-list { grid-template-columns:1fr; }
+  .axis-list, .type-pair-grid { grid-template-columns:1fr; }
   .type-row { grid-template-columns:1fr; gap:6px; }
   .type-count { text-align:left; }
   .bar-row { grid-template-columns:76px 1fr 34px; }
@@ -613,6 +663,7 @@ td:first-child {
     <div class="top-actions">
       <button class="btn primary" id="seedBtn">샘플 데이터 켜기</button>
       <button class="btn accent" id="exportBtn">엑셀 내보내기</button>
+      <button class="btn" id="backupBtn">실제 데이터 백업</button>
       <button class="btn" onclick="window.print()">인쇄</button>
       <button class="btn" id="lockBtn">잠금</button>
       <button class="btn" onclick="location.href='index.html'">진단 페이지</button>
@@ -720,6 +771,7 @@ td:first-child {
 const DASHBOARD_PASSCODE = '0096';
 const AUTH_KEY = 'cadDiagnosis.dashboard.authed';
 const STORAGE_KEY = 'cadDiagnosis.completed.v1';
+const REAL_STORAGE_KEY = 'cadDiagnosis.real.v1';
 const DIM_SHORT = {
   auto: { kor:'업무 자동화', en:'AUTOMATION', color:'var(--blue)' },
   exp:  { kor:'설계 전문성', en:'EXPERTISE', color:'var(--violet)' },
@@ -792,10 +844,39 @@ function pad(n) { return n < 10 ? '0' + n : '' + n; }
 function loadRecords() {
   try {
     const rows = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const allRows = Array.isArray(rows) ? rows : [];
+    const realRows = allRows.filter(isRealRecord);
+    if (realRows.length) saveRealRecords(realRows);
+    return mergeRealRecords(allRows);
+  } catch (err) {
+    return loadRealRecords();
+  }
+}
+function isRealRecord(row) {
+  return !String(row?.id || '').startsWith('DEMO-');
+}
+function loadRealRecords() {
+  try {
+    const rows = JSON.parse(localStorage.getItem(REAL_STORAGE_KEY) || '[]');
     return Array.isArray(rows) ? rows : [];
   } catch (err) {
     return [];
   }
+}
+function saveRealRecords(realRows) {
+  const map = new Map(loadRealRecords().map(row => [row.id, row]));
+  realRows.filter(row => row && row.id).forEach(row => map.set(row.id, row));
+  const merged = [...map.values()].sort((a,b) => String(b.completedAtISO || '').localeCompare(String(a.completedAtISO || '')));
+  localStorage.setItem(REAL_STORAGE_KEY, JSON.stringify(merged.slice(0, 200)));
+}
+function mergeRealRecords(allRows) {
+  const map = new Map(allRows.map(row => [row.id, row]));
+  loadRealRecords().forEach(row => {
+    if (row && row.id && !map.has(row.id)) map.set(row.id, row);
+  });
+  const merged = [...map.values()].sort((a,b) => String(b.completedAtISO || '').localeCompare(String(a.completedAtISO || '')));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(merged.slice(0, 100)));
+  return merged.slice(0, 100);
 }
 function isAuthed() {
   return sessionStorage.getItem(AUTH_KEY) === 'yes';
@@ -829,6 +910,7 @@ $('#lockBtn').addEventListener('click', () => {
 });
 $('#exportBtn').addEventListener('click', exportExcel);
 $('#seedBtn').addEventListener('click', seedDemoRecords);
+$('#backupBtn').addEventListener('click', exportRealDataBackup);
 
 function render() {
   records = loadRecords();
@@ -892,6 +974,26 @@ function getAxisCounts() {
   return [...counts.entries()].sort((a,b) => b[1] - a[1]);
 }
 
+function getPairCounts() {
+  const counts = new Map();
+  records.forEach(row => {
+    const scores = row.scores || {};
+    const top = ORDER
+      .map(k => [k, scores[k] || 0])
+      .sort((a,b) => b[1] - a[1])
+      .slice(0, 2)
+      .map(([key]) => key)
+      .sort();
+    const key = top.join('-');
+    counts.set(key, (counts.get(key) || 0) + 1);
+  });
+  return [...counts.entries()].sort((a,b) => b[1] - a[1]).slice(0, 3);
+}
+
+function labelPair(key) {
+  return key.split('-').map(k => DIM_SHORT[k]?.kor || k).join(' + ');
+}
+
 function renderAxisDonut(axisCounts) {
   const total = axisCounts.reduce((sum, [, count]) => sum + count, 0) || 1;
   const radius = 78;
@@ -917,6 +1019,7 @@ function renderAxisDonut(axisCounts) {
 function renderTypeDistribution() {
   const counts = getTypeCounts();
   const axisCounts = getAxisCounts();
+  const pairCounts = getPairCounts();
   $('#typeDistTag').textContent = `${axisCounts.length} Axes · ${counts.length} Types`;
   if (!counts.length) {
     $('#typeDistribution').innerHTML = '<div class="empty"><b>분포 데이터가 없습니다</b>진단 또는 샘플 데이터를 추가하면 타입별 분포가 표시됩니다.</div>';
@@ -929,7 +1032,7 @@ function renderTypeDistribution() {
     <div class="type-chart">
       <div class="type-donut-wrap">${renderAxisDonut(axisCounts)}</div>
       <div class="type-main">
-        <div>
+        <div class="type-panel">
           <div class="type-section-title">Top Diagnosis Axes</div>
           <div class="axis-list">
             ${axisCounts.map(([key, count]) => {
@@ -943,9 +1046,23 @@ function renderTypeDistribution() {
             }).join('')}
           </div>
         </div>
-        <div>
+        <div class="type-panel">
+          <div class="type-section-title">Dominant Segment Combinations</div>
+          <div class="type-pair-grid">
+            ${pairCounts.map(([key, count]) => {
+              const pct = Math.round((count / records.length) * 100);
+              return `
+                <div class="type-pair-card">
+                  <b>${escapeHtml(labelPair(key))}</b>
+                  <span>${count} records · ${pct}%</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        <div class="type-panel">
           <div class="type-section-title">Top Detailed Types</div>
-          <div class="type-chart" style="display:flex;gap:10px">
+          <div>
             ${topTypes.map(([name, count]) => {
               const pct = Math.round((count / records.length) * 100);
               const width = Math.max(6, Math.round((count / max) * 100));
@@ -966,7 +1083,10 @@ function renderTypeDistribution() {
 }
 
 function saveRecords(nextRecords) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(nextRecords));
+  const clean = nextRecords.filter(Boolean).slice(0, 100);
+  const realRows = clean.filter(isRealRecord);
+  if (realRows.length) saveRealRecords(realRows);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
 }
 
 function hasDemoRecords() {
@@ -981,13 +1101,13 @@ function updateSeedButton() {
 
 function seedDemoRecords() {
   if (hasDemoRecords()) {
-    const remaining = loadRecords().filter(row => !String(row.id || '').startsWith('DEMO-'));
+    const remaining = loadRecords().filter(isRealRecord);
     saveRecords(remaining);
     selectedId = remaining[0]?.id || null;
     render();
     return;
   }
-  const current = loadRecords().filter(row => !String(row.id || '').startsWith('DEMO-'));
+  const current = loadRecords().filter(isRealRecord);
   const demo = createDemoRecords();
   saveRecords([...demo, ...current].slice(0, 100));
   selectedId = demo[0]?.id || null;
@@ -1311,6 +1431,30 @@ function exportExcel() {
   const a = document.createElement('a');
   a.href = url;
   a.download = `cad-diagnosis-dashboard-${new Date().toISOString().slice(0,10)}.xls`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function exportRealDataBackup() {
+  const realRows = loadRecords().filter(isRealRecord);
+  if (!realRows.length) {
+    alert('백업할 실제 데이터가 없습니다.');
+    return;
+  }
+  saveRealRecords(realRows);
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    source: 'CAD Diagnosis Dashboard',
+    count: realRows.length,
+    records: realRows
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `cad-diagnosis-real-backup-${new Date().toISOString().slice(0,10)}.json`;
   document.body.appendChild(a);
   a.click();
   a.remove();

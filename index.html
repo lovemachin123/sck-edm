@@ -2001,6 +2001,7 @@ function recommendCAD(scores) {
    9.  COMPLETED DATA & EXPORT
    ========================================================= */
 const STORAGE_KEY = 'cadDiagnosis.completed.v1';
+const REAL_STORAGE_KEY = 'cadDiagnosis.real.v1';
 
 function loadCompletedRecords() {
   try {
@@ -2013,6 +2014,22 @@ function loadCompletedRecords() {
 
 function saveCompletedRecords(records) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+function loadRealRecords() {
+  try {
+    const rows = JSON.parse(localStorage.getItem(REAL_STORAGE_KEY) || '[]');
+    return Array.isArray(rows) ? rows : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+function saveRealRecord(record) {
+  const map = new Map(loadRealRecords().map(row => [row.id, row]));
+  if (record && record.id) map.set(record.id, record);
+  const rows = [...map.values()].sort((a,b) => String(b.completedAtISO || '').localeCompare(String(a.completedAtISO || '')));
+  localStorage.setItem(REAL_STORAGE_KEY, JSON.stringify(rows.slice(0, 200)));
 }
 
 function getOptionLabel(q, value) {
@@ -2070,6 +2087,7 @@ function rememberCompletedRecord(record) {
   const records = loadCompletedRecords().filter(row => row.id !== record.id);
   records.unshift(record);
   saveCompletedRecords(records.slice(0, 100));
+  saveRealRecord(record);
   return record;
 }
 
