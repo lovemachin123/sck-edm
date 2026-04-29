@@ -187,6 +187,84 @@ h1 {
   overflow:hidden;
   text-overflow:ellipsis;
 }
+.type-chart {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.type-row {
+  display:grid;
+  grid-template-columns:minmax(140px, 220px) 1fr 70px;
+  gap:12px;
+  align-items:center;
+}
+.type-name {
+  min-width:0;
+  font-size:12px;
+  font-weight:800;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.type-track {
+  height:12px;
+  overflow:hidden;
+  border-radius:var(--r-pill);
+  background:var(--surface-soft);
+  border:1px solid var(--border);
+}
+.type-fill {
+  width:var(--w);
+  height:100%;
+  border-radius:var(--r-pill);
+  background:linear-gradient(90deg, var(--brand), #ff7aa3);
+}
+.type-count {
+  font-family:var(--f-mono);
+  font-size:12px;
+  font-weight:900;
+  text-align:right;
+  color:var(--ink);
+}
+.insight-grid {
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:12px;
+}
+.insight-card {
+  background:var(--surface-soft);
+  border:1px solid var(--border);
+  border-radius:var(--r-3);
+  padding:16px;
+}
+.insight-card b {
+  display:block;
+  font-family:var(--f-display);
+  font-size:14px;
+  letter-spacing:-.02em;
+  color:var(--ink);
+}
+.insight-card p {
+  margin-top:8px;
+  font-size:12.5px;
+  color:var(--text-mute);
+}
+.insight-list {
+  margin-top:12px;
+  display:grid;
+  gap:8px;
+}
+.insight-list div {
+  padding:10px 12px;
+  border-radius:var(--r-2);
+  background:var(--surface-soft);
+  border:1px solid var(--border);
+  font-size:12.5px;
+  color:var(--text-mute);
+}
+.insight-list b {
+  color:var(--text);
+}
 .grid {
   display:grid;
   grid-template-columns:360px 1fr;
@@ -435,7 +513,7 @@ td:first-child {
 }
 @media (max-width:900px) {
   .kpis { grid-template-columns:repeat(2, 1fr); }
-  .grid, .score-grid { grid-template-columns:1fr; }
+  .grid, .score-grid, .insight-grid { grid-template-columns:1fr; }
 }
 @media (max-width:560px) {
   .shell { width:calc(100% - 20px); padding-top:18px; }
@@ -443,6 +521,8 @@ td:first-child {
   h1 { font-size:28px; }
   .hero { padding:20px; }
   .kpis, .customer-grid, .login-actions { grid-template-columns:1fr; }
+  .type-row { grid-template-columns:1fr; gap:6px; }
+  .type-count { text-align:left; }
   .bar-row { grid-template-columns:76px 1fr 34px; }
 }
 </style>
@@ -484,6 +564,16 @@ td:first-child {
   </section>
 
   <section class="kpis" id="kpis"></section>
+
+  <section class="panel" style="margin-bottom:14px">
+    <div class="panel-head">
+      <div class="panel-title">타입 분포</div>
+      <div class="tag" id="typeDistTag">0 Types</div>
+    </div>
+    <div class="panel-body">
+      <div id="typeDistribution"></div>
+    </div>
+  </section>
 
   <section class="grid">
     <aside class="panel">
@@ -532,6 +622,34 @@ td:first-child {
           <div id="answerTable"></div>
         </div>
       </section>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:14px">
+    <div class="panel-head">
+      <div class="panel-title">타입별 분류 기준과 제안 인사이트</div>
+      <div class="tag">Proposal Guide</div>
+    </div>
+    <div class="panel-body">
+      <div class="insight-grid">
+        <div class="insight-card">
+          <b>분류 방법</b>
+          <p>5개 영역 점수 중 상위 2개 축을 먼저 고르고, 평균 강도와 1-2위 점수 차이, 3위 영역의 보조 강도를 함께 반영해 세부 타입을 나눕니다.</p>
+        </div>
+        <div class="insight-card">
+          <b>그래프 해석</b>
+          <p>분포가 높은 타입은 현재 고객군에서 반복적으로 나타나는 공통 니즈입니다. 개별 상담보다 세미나, 템플릿, 패키지 제안으로 묶는 편이 효율적입니다.</p>
+        </div>
+        <div class="insight-card">
+          <b>제안 방향</b>
+          <p>상위 타입의 핵심 불편을 먼저 언급하고, AutoCAD Plus나 Web을 기능 소개가 아닌 업무 개선 시나리오로 연결하면 설득력이 높아집니다.</p>
+        </div>
+      </div>
+      <div class="insight-list">
+        <div><b>자동화/확장성 비중이 높을 때</b> LISP, 서드파티, ERP/Excel 연동을 기준으로 현재 반복 작업 시간을 수치화하고 AutoCAD Plus 중심의 표준화 제안을 준비합니다.</div>
+        <div><b>협업/이동성 비중이 높을 때</b> 최신 도면 공유, 마크업, 현장 확인, 버전 혼선을 먼저 짚고 AutoCAD Web 기반의 검토 흐름을 제안하는 것이 유리합니다.</div>
+        <div><b>설계 전문성 비중이 높을 때</b> 표준 부품, 공차, 은선, Hole Table처럼 실무자가 바로 체감하는 전문 기능 데모를 앞세우면 전환 가능성이 커집니다.</div>
+      </div>
     </div>
   </section>
 </main>
@@ -658,6 +776,7 @@ function render() {
 
   updateSeedButton();
   renderKpis(selected);
+  renderTypeDistribution();
   renderRecordList();
   renderDetail(selected);
 }
@@ -666,13 +785,14 @@ function renderKpis(selected) {
   const avgAll = records.length
     ? Math.round(records.reduce((sum, row) => sum + (row.totalScore || 0), 0) / records.length)
     : 0;
-  const topType = getMostCommon(records.map(row => row.type?.name).filter(Boolean));
   const latest = records[0]?.completedAt || '-';
+  const demoCount = records.filter(row => String(row.id || '').startsWith('DEMO-')).length;
+  const realCount = records.length - demoCount;
   $('#kpis').innerHTML = [
     ['Completed', records.length, '누적 진단'],
     ['Average', avgAll, '전체 평균 점수'],
     ['Latest', latest, '최근 완료'],
-    ['Top Type', topType || '-', '가장 많은 유형']
+    ['Real / Demo', `${realCount} / ${demoCount}`, '실제 / 샘플 데이터']
   ].map(([label, value, note]) => `
     <div class="kpi">
       <div class="kpi-label">${escapeHtml(label)}</div>
@@ -686,6 +806,40 @@ function getMostCommon(values) {
   const counts = new Map();
   values.forEach(v => counts.set(v, (counts.get(v) || 0) + 1));
   return [...counts.entries()].sort((a,b) => b[1] - a[1])[0]?.[0];
+}
+
+function getTypeCounts() {
+  const counts = new Map();
+  records.forEach(row => {
+    const name = row.type?.name || '미분류';
+    counts.set(name, (counts.get(name) || 0) + 1);
+  });
+  return [...counts.entries()].sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko'));
+}
+
+function renderTypeDistribution() {
+  const counts = getTypeCounts();
+  $('#typeDistTag').textContent = `${counts.length} Types`;
+  if (!counts.length) {
+    $('#typeDistribution').innerHTML = '<div class="empty"><b>분포 데이터가 없습니다</b>진단 또는 샘플 데이터를 추가하면 타입별 분포가 표시됩니다.</div>';
+    return;
+  }
+  const max = counts[0][1] || 1;
+  $('#typeDistribution').innerHTML = `
+    <div class="type-chart">
+      ${counts.map(([name, count]) => {
+        const pct = Math.round((count / records.length) * 100);
+        const width = Math.max(4, Math.round((count / max) * 100));
+        return `
+          <div class="type-row" title="${escapeHtml(name)} ${count}건 ${pct}%">
+            <div class="type-name">${escapeHtml(name)}</div>
+            <div class="type-track"><div class="type-fill" style="--w:${width}%"></div></div>
+            <div class="type-count">${count} · ${pct}%</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
 }
 
 function saveRecords(nextRecords) {
