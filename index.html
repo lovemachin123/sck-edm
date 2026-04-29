@@ -1207,11 +1207,13 @@ textarea.opt-text:focus {
    ============================================================ */
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--sp-2);
   margin-top: var(--sp-8);
   padding-top: var(--sp-6);
   border-top: 1px solid var(--border);
 }
+.actions .btn { min-width: calc(50% - var(--sp-1)); }
 .btn-secondary {
   background: var(--surface);
   color: var(--text);
@@ -1580,7 +1582,7 @@ const RECOS = {
 /* =========================================================
    4.  STATE
    ========================================================= */
-const state = { step:0, answers:{}, userName:'사용자' };
+const state = { step:0, answers:{}, userName:'사용자', currentRecord:null };
 
 /* =========================================================
    5.  UTIL
@@ -1726,7 +1728,6 @@ function renderIntro() {
           <span>진단 시작하기</span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8 L13 8 M9 4 L13 8 L9 12"/></svg>
         </button>
-        <p class="intro-foot">개인정보는 수집되지 않으며, 모든 진단은 브라우저 내에서 처리됩니다.</p>
       </div>
     </div>
   `;
@@ -1736,6 +1737,7 @@ function renderIntro() {
 window.startSurvey = function() {
   const name = ($('#userName')?.value || '').trim();
   if (name) state.userName = name;
+  state.currentRecord = null;
   state.step = 1;
   renderQuestion();
 };
@@ -1924,7 +1926,83 @@ function recommendCAD(scores) {
 }
 
 /* =========================================================
-   9.  RADAR CHART (premium)
+   9.  COMPLETED DATA & EXPORT
+   ========================================================= */
+const STORAGE_KEY = 'cadDiagnosis.completed.v1';
+
+function loadCompletedRecords() {
+  try {
+    const rows = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    return Array.isArray(rows) ? rows : [];
+  } catch (err) {
+    return [];
+  }
+}
+
+function saveCompletedRecords(records) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+}
+
+function getOptionLabel(q, value) {
+  if (q.type === 'text') return String(value || '').trim();
+  if (q.type === 'multi') {
+    return (Array.isArray(value) ? value : [])
+      .map(i => {
+        const opt = q.options[i];
+        return typeof opt === 'string' ? opt : opt?.label;
+      })
+      .filter(Boolean)
+      .join(', ');
+  }
+  const opt = q.options[value];
+  return typeof opt === 'string' ? opt : opt?.label || '';
+}
+
+function buildAnswerRows() {
+  return QUESTIONS.map((q, idx) => ({
+    no: idx + 1,
+    id: q.id,
+    category: q.cat,
+    question: q.q,
+    answer: getOptionLabel(q, state.answers[q.id])
+  }));
+}
+
+function buildDiagnosisRecord(scores, type, recos) {
+  const answers = buildAnswerRows();
+  const byId = Object.fromEntries(answers.map(row => [row.id, row.answer]));
+  const totalScore = Math.round(Object.values(scores).reduce((a, b) => a + b, 0) / Object.keys(scores).length);
+  const now = new Date();
+  return {
+    id: 'DX-' + now.getTime().toString(36).toUpperCase(),
+    completedAt: now.toLocaleString('ko-KR', { hour12:false }),
+    completedAtISO: now.toISOString(),
+    userName: state.userName || '사용자',
+    customer: {
+      industry: byId.industry || '-',
+      role: byId.role || '-',
+      teamSize: byId.teamSize || '-',
+      cadType: byId.cadType || '-',
+      aiTarget: byId.aiTarget || '-',
+      extraSvc: byId.extraSvc || '-'
+    },
+    scores,
+    totalScore,
+    type: { name:type.name, eng:type.eng, quote:type.quote },
+    recommendations: recos.map(r => r.name),
+    answers
+  };
+}
+
+function rememberCompletedRecord(record) {
+  const records = loadCompletedRecords().filter(row => row.id !== record.id);
+  records.unshift(record);
+  saveCompletedRecords(records.slice(0, 100));
+  return record;
+}
+
+/* =========================================================
+   10.  RADAR CHART (premium)
    ========================================================= */
 function renderRadar(scores) {
   const dims = ['auto','exp','col','ext','mob'];
@@ -2055,10 +2133,13 @@ function countUp(el, to, duration = 1200) {
 /* =========================================================
    11.  RESULT
    ========================================================= */
-function renderResult() {
+function renderResult(shouldSave = true) {
   const scores = calcScores();
   const type = diagnoseType(scores);
   const recos = recommendCAD(scores);
+  if (shouldSave || !state.currentRecord) {
+    state.currentRecord = rememberCompletedRecord(buildDiagnosisRecord(scores, type, recos));
+  }
 
   topBar.hidden = true;
   navBar.hidden = true;
@@ -2226,6 +2307,7 @@ window.restart = function() {
   state.step = 0;
   state.answers = {};
   state.userName = '사용자';
+  state.currentRecord = null;
   renderIntro();
   window.scrollTo({top: 0});
 };
