@@ -469,6 +469,7 @@ td:first-child {
       <span>CAD Diagnosis Admin</span>
     </div>
     <div class="top-actions">
+      <button class="btn primary" id="seedBtn">샘플 25건 생성</button>
       <button class="btn accent" id="exportBtn">엑셀 내보내기</button>
       <button class="btn" onclick="window.print()">인쇄</button>
       <button class="btn" id="lockBtn">잠금</button>
@@ -595,6 +596,7 @@ $('#lockBtn').addEventListener('click', () => {
   showLogin();
 });
 $('#exportBtn').addEventListener('click', exportExcel);
+$('#seedBtn').addEventListener('click', seedDemoRecords);
 
 function render() {
   records = loadRecords();
@@ -631,6 +633,132 @@ function getMostCommon(values) {
   const counts = new Map();
   values.forEach(v => counts.set(v, (counts.get(v) || 0) + 1));
   return [...counts.entries()].sort((a,b) => b[1] - a[1])[0]?.[0];
+}
+
+function saveRecords(nextRecords) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(nextRecords));
+}
+
+function seedDemoRecords() {
+  const current = loadRecords().filter(row => !String(row.id || '').startsWith('DEMO-'));
+  const demo = createDemoRecords();
+  saveRecords([...demo, ...current].slice(0, 100));
+  selectedId = demo[0]?.id || null;
+  render();
+}
+
+function createDemoRecords() {
+  const names = ['김민준','이서연','박도윤','최지우','정현우','강하윤','조민재','윤서준','장예린','임태훈','한유진','오지호','신가은','서준호','권다은','황시우','송지민','안도현','유나래','배성민','문채원','백준영','남소율','홍지안','고태양'];
+  const profiles = [
+    { industry:'기계', role:'설계', teamSize:'6~10명', cadType:'AutoCAD, AutoCAD Plus', type:'생산성 디자이너', eng:'Productivity-Driven Designer', quote:'반복은 줄이고 정밀함은 높이는, 생산성 중심의 설계자.', reco:['AutoCAD Plus'], scores:{auto:88, exp:84, col:46, ext:72, mob:38} },
+    { industry:'건축 설비(전기, 공조, 배관, 소방)', role:'시공', teamSize:'10~20명', cadType:'AutoCAD, AutoCAD Web', type:'현장 지휘관', eng:'Field-Oriented CAD Expert', quote:'사무실의 워크스테이션을 태블릿에 담으십시오.', reco:['AutoCAD Plus','AutoCAD Web'], scores:{auto:52, exp:82, col:60, ext:48, mob:86} },
+    { industry:'플랜트', role:'관리', teamSize:'20명 이상', cadType:'AutoCAD, AutoCAD Plus, 기타CAD(직접입력)', type:'협업 마에스트로', eng:'Collaboration Maestro', quote:'전문 설계가 팀의 속도를 만들 때, 진정한 협업이 시작됩니다.', reco:['AutoCAD Plus','AutoCAD Web'], scores:{auto:58, exp:86, col:90, ext:66, mob:62} },
+    { industry:'토목', role:'발주처', teamSize:'10~20명', cadType:'AutoCAD Web, ZWCAD', type:'클라우드 협업가', eng:'Cloud-Based Collaborator', quote:'언제 어디서나 모두가 같은 도면을 보는 것.', reco:['AutoCAD Web'], scores:{auto:38, exp:44, col:84, ext:42, mob:82} },
+    { industry:'전장', role:'제조', teamSize:'6~10명', cadType:'AutoCAD, GstarCAD', type:'커스터마이징 전문가', eng:'Customization Expert', quote:'사내 표준에 최적화된 자동화가 진짜 경쟁력입니다.', reco:['AutoCAD Plus'], scores:{auto:86, exp:58, col:48, ext:90, mob:40} },
+    { industry:'건축', role:'설계', teamSize:'5명 미만', cadType:'AutoCAD LT, AutoCAD Web', type:'스마트 모빌리티 설계자', eng:'Smart Mobility Designer', quote:'자동화된 설계를 어디서나 즉시 확인합니다.', reco:['AutoCAD Web'], scores:{auto:80, exp:50, col:58, ext:44, mob:84} },
+    { industry:'기계', role:'구매', teamSize:'10~20명', cadType:'AutoCAD, CADian', type:'프로세스 통합가', eng:'Process Integrator', quote:'개인의 자동화를 팀의 표준으로 확산합니다.', reco:['AutoCAD Plus','AutoCAD Web'], scores:{auto:82, exp:52, col:80, ext:64, mob:54} },
+    { industry:'플랜트', role:'설계', teamSize:'20명 이상', cadType:'AutoCAD Plus, AutoCAD', type:'전문 자동화 마스터', eng:'Expert Automation Master', quote:'정밀한 설계와 강력한 확장성을 함께 잡습니다.', reco:['AutoCAD Plus'], scores:{auto:68, exp:92, col:54, ext:88, mob:46} },
+    { industry:'건축 설비(전기, 공조, 배관, 소방)', role:'관리', teamSize:'20명 이상', cadType:'AutoCAD, AutoCAD Web', type:'시스템 연동 협업가', eng:'System-Integrated Collaborator', quote:'데이터가 흐르는 협업 환경을 만듭니다.', reco:['AutoCAD Web','AutoCAD Plus'], scores:{auto:56, exp:48, col:86, ext:82, mob:58} },
+    { industry:'토목', role:'시공', teamSize:'6~10명', cadType:'AutoCAD Web, ZWCAD, CADian', type:'유연한 확장 워커', eng:'Flexible Extension Worker', quote:'커스터마이징과 모바일을 함께 다룹니다.', reco:['AutoCAD Plus','AutoCAD Web'], scores:{auto:50, exp:46, col:58, ext:78, mob:82} }
+  ];
+  const aiTargets = [
+    '반복되는 도면 정정과 블록 교체 자동화',
+    'BOM 자동 생성과 수량 산출 검토',
+    '현장 마크업 반영 여부 자동 확인',
+    '도면 버전 비교와 변경 이력 정리',
+    '표준 부품 삽입과 치수 공차 검수',
+    'ERP 품번 데이터와 도면 속성 연동',
+    '배관/전장 심볼 배치 규칙 자동화',
+    '출도 전 레이어, 문자, 치수 스타일 점검'
+  ];
+  const services = [
+    '유형기반 워크플로우 컨설팅',
+    'DWG 리드로잉 클리닉',
+    'AutoCAD Refresh Day 워크샵',
+    '업종별 업무 레시피 카드 제공',
+    '유형기반 워크플로우 컨설팅, DWG 리드로잉 클리닉',
+    'AutoCAD Refresh Day 워크샵, 업종별 업무 레시피 카드 제공'
+  ];
+  return names.map((name, idx) => {
+    const base = profiles[idx % profiles.length];
+    const scores = varyScores(base.scores, idx);
+    const totalScore = Math.round(Object.values(scores).reduce((a,b) => a + b, 0) / Object.keys(scores).length);
+    const completed = new Date();
+    completed.setDate(completed.getDate() - Math.floor(idx / 2));
+    completed.setHours(9 + (idx % 8), (idx * 7) % 60, 0, 0);
+    const customer = {
+      industry: base.industry,
+      role: base.role,
+      teamSize: base.teamSize,
+      cadType: rotateCad(base.cadType, idx),
+      aiTarget: aiTargets[idx % aiTargets.length],
+      extraSvc: services[idx % services.length]
+    };
+    return {
+      id: `DEMO-${String(idx + 1).padStart(2, '0')}`,
+      completedAt: completed.toLocaleString('ko-KR', { hour12:false }),
+      completedAtISO: completed.toISOString(),
+      userName: name,
+      customer,
+      scores,
+      totalScore,
+      type: { name:base.type, eng:base.eng, quote:base.quote },
+      recommendations: base.reco,
+      answers: buildDemoAnswers(customer, scores, idx)
+    };
+  });
+}
+
+function varyScores(scores, idx) {
+  const shifts = [-8, -4, 0, 5, 9];
+  return Object.fromEntries(Object.entries(scores).map(([key, value], i) => {
+    const next = value + shifts[(idx + i) % shifts.length];
+    return [key, Math.max(20, Math.min(98, next))];
+  }));
+}
+
+function rotateCad(cadType, idx) {
+  const extras = ['AutoCAD', 'AutoCAD LT', 'AutoCAD Web', 'AutoCAD Plus', 'ZWCAD', 'GstarCAD', 'CADian'];
+  if (idx % 3 !== 0) return cadType;
+  return [...new Set([cadType.split(', ')[0], extras[(idx + 2) % extras.length], extras[(idx + 4) % extras.length]])].join(', ');
+}
+
+function choiceByScore(score, labels) {
+  if (score >= 85) return labels[0];
+  if (score >= 70) return labels[1] || labels[0];
+  if (score >= 55) return labels[2] || labels.at(-1);
+  if (score >= 35) return labels[3] || labels.at(-1);
+  return labels.at(-1);
+}
+
+function buildDemoAnswers(customer, scores, idx) {
+  const always = ['항상 그렇다','자주 있다','종종 있다','드물게 있다','거의 없다'];
+  const need = ['매우 필요하다','필요하다','보통 수준이다','필요하긴 하나 영향은 거의 없다','전혀 필요하지 않다'];
+  const essential = ['없으면 업무 불가능','없으면 다소 불편함','있으면 편함','전혀 필요 없음'];
+  const rows = [
+    ['기본정보','현재 종사하고 계신 업종(산업 분야)은 무엇인가요?', customer.industry],
+    ['기본정보','현재 담당하고 있는 주요 직무(업무 영역)는 무엇입니까?', customer.role],
+    ['기본정보','설계 인원은 몇 명인가요?', customer.teamSize],
+    ['기본정보','현재 주로 사용 중인 CAD 종류는 무엇인가요?', customer.cadType],
+    ['업무 자동화 & 설계 전문성','1일 사용 시간은 몇 시간인가요?', choiceByScore(scores.auto, ['5시간 이상','5시간 미만','3시간 미만','1시간 미만'])],
+    ['업무 자동화','도면 내에 흩어진 블록들을 교체할 때, AI가 비슷한 모양을 인식해서 한 번에 바꿔주는 기능(Smart Blocks)이 있다면 업무에 필요하신가요?', choiceByScore(scores.auto, ['매우 필요함','필요함','보통','필요 없음'])],
+    ['업무 자동화','CAD와 AI를 함께 하여 자동화 한다면 어떤 부분에 적용하고 싶으신가요?', customer.aiTarget],
+    ['업무 자동화','업무 효율을 위해 사내 전용 리습(LISP)이나 매크로 기능을 필수적으로 사용하고 계십니까?', choiceByScore(scores.ext, essential)],
+    ['업무 자동화','드림(Dream), 캐드마스, 맥클릭 같은 별도의 3rd Party (서드파티) 프로그램 없이는 업무 진행이 어렵습니까?', choiceByScore(scores.ext - 6, essential)],
+    ['확장성','ERP나 엑셀 등 타 프로그램과 연동되는 자동화 스크립트를 사용하거나 개발할 계획이 있으신가요?', scores.ext >= 80 ? '시스템 연동 필수 (ERP/PLM)' : scores.ext >= 55 ? '단순 연동 (Excel)' : '계획 없음'],
+    ['이동성','작업 중 최신 도면을 사무실 외부(회의실·외근 등)에서 확인해야 하는 경우가 있나요?', choiceByScore(scores.mob, always)],
+    ['이동성','현장에서 도면을 열람할 때, 종이보다 디지털(모바일기기/노트북) 사용이 편하다고 느끼시나요?', choiceByScore(scores.mob - 3, always)],
+    ['협업','이메일 용량 제한이나 보안 문제로 도면 파일 공유에 불편함을 느끼며, 클라우드(링크 공유) 방식이 필요하신가요?', choiceByScore(scores.col, always)],
+    ['협업','도면에 대한 피드백(수정 지시)을 종이나 PDF가 아닌 CAD 도면 위에 바로 마크업하여 공유하고 싶으신가요?', choiceByScore(scores.col - 4, always)],
+    ['협업','팀원이나 협력사와 도면을 주고받을 때, 버전 관리(최종_v1, 진짜최종_v2)가 꼬여서 곤란한 적이 있나요?', choiceByScore(scores.col + 3, always)],
+    ['설계 전문성','볼트, 너트, 형강 등 70만 개 이상의 표준 부품을 일일이 그리지 않고, 규격(ISO/KS 등)에 맞춰 자동으로 생성 및 배치하는 기능이 필요하신가요?', choiceByScore(scores.exp, need)],
+    ['설계 전문성','부품이 서로 겹칠 때, 앞뒤 관계를 인식하여 가려진 선을 자동으로 점선(은선) 처리해주고, 이동 시에도 자동 업데이트되는 기능이 필요하신가요?', choiceByScore(scores.exp - 2, need)],
+    ['설계 전문성','치수 기입 시 공차 표현을 위한 별도 작업이 필요하신가요?', choiceByScore(scores.exp - 7, need)],
+    ['설계 전문성','도면 내의 수많은 구멍(Hole) 정보를 프로그램이 자동 인식하여, 가공에 필요한 X,Y 좌표와 직경 테이블을 클릭 한 번으로 생성하는 기능이 필요하신가요?', choiceByScore(scores.exp + 4, need)],
+    ['설계 전문성','원본 형상이 수정되면 확대도(Detail View)까지 자동 반영되어, 별도의 수정이나 축척 계산이 필요 없는 기능이 업무에 도움이 될까요?', choiceByScore(scores.exp, need)],
+    ['사용자 의견','추가적으로 제공 받고 싶은 서비스를 선택해주세요.', customer.extraSvc]
+  ];
+  return rows.map((row, i) => ({ no:i + 1, id:`demoQ${i + 1}`, category:row[0], question:row[1], answer:row[2] }));
 }
 
 function renderRecordList() {
